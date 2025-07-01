@@ -10,12 +10,13 @@ public class MovePillarsWithRightJoystick : MonoBehaviour
 
     void Update()
     {
-        // Input vom rechten Joystick holen
-        Vector2 input = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+        // InputRight vom rechten Joystick holen
+        Vector2 inputRight = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+        Vector2 inputLeft = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
 
-        if (input.magnitude > 0.1f)
+        if (inputRight.magnitude > 0.1f)
         {
-            Vector3 inputDir = new Vector3(input.x, 0, input.y);
+            Vector3 inputRightDir = new Vector3(inputRight.x, 0, inputRight.y);
 
             // Kamera-Forward auf XZ-Ebene (Y=0) projizieren und normalisieren
             Vector3 cameraForward = Camera.main.transform.forward;
@@ -28,10 +29,15 @@ public class MovePillarsWithRightJoystick : MonoBehaviour
             cameraRight.Normalize();
 
             // Bewegung in Kamera-Raum umrechnen
-            Vector3 moveDir = cameraRight * inputDir.x + cameraForward * inputDir.z;
+            Vector3 moveDir = cameraRight * inputRightDir.x + cameraForward * inputRightDir.z;
 
             // Bewegung anwenden
             transform.position += moveDir * moveSpeed * Time.deltaTime;
+        }
+        if (inputLeft.magnitude > 0.1f)
+        {
+            // Bewegung anwenden
+            transform.Rotate(0, inputLeft.x * moveSpeed * 30.0f * Time.deltaTime, 0);
         }
     }
 }

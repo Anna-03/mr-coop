@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Meta.XR.ImmersiveDebugger;
 using UnityEngine;
 
 public class ConnectionsManager : MonoBehaviour
@@ -46,42 +47,42 @@ public class ConnectionsManager : MonoBehaviour
                     }
                     if (row == 1)
                     {
-                        station = stationObjectsFlat[0];
+                        station = stationObjectsFlat[1];
                     }
                     if (row == 2)
                     {
-                        station = stationObjectsFlat[1];
+                        station = stationObjectsFlat[2];
                     }
                     if (row == 3)
                     {
-                        station = stationObjectsFlat[1];
+                        station = stationObjectsFlat[3];
                     }
                     if (row == 4)
                     {
-                        station = stationObjectsFlat[2];
+                        station = stationObjectsFlat[4];
                     }
                 }
                 if (column == 1)
                 {
                     if (row == 0)
                     {
-                        station = stationObjectsFlat[3];
+                        station = stationObjectsFlat[5];
                     }
                     if (row == 1)
                     {
-                        station = stationObjectsFlat[3];
+                        station = stationObjectsFlat[6];
                     }
                     if (row == 2)
                     {
-                        station = stationObjectsFlat[4];
+                        station = stationObjectsFlat[7];
                     }
                     if (row == 3)
                     {
-                        station = stationObjectsFlat[4];
+                        station = stationObjectsFlat[8];
                     }
                     if (row == 4)
                     {
-                        station = stationObjectsFlat[5];
+                        station = stationObjectsFlat[9];
                     }
                 }
 
@@ -89,8 +90,11 @@ public class ConnectionsManager : MonoBehaviour
 
                 if (current >= 0)
                 {
+
                     targetColor = (correctStations[row, column] == 1) ? Color.green : Color.red;
                     station.transform.localScale = new Vector3(2.8f, 0.08f, 2.8f);
+                    Debug.Log("row: " + row);
+                    Debug.Log("column: " + column);
                 }
                 else
                 {
