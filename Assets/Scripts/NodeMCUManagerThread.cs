@@ -26,6 +26,8 @@ public class NodeMCUManagerThread : MonoBehaviour
     int numMessages;
     private ConcurrentQueue<int[]> receivedStatesQueue = new ConcurrentQueue<int[]>();
 
+    public bool buttonState = false;
+
     void Start()
     {
         for (int row = 0; row < statesArray.GetLength(0); row++)
