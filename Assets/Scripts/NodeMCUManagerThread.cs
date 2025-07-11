@@ -92,7 +92,7 @@ public class NodeMCUManagerThread : MonoBehaviour
         string message = "Hello from Unity!";
         byte[] data = Encoding.UTF8.GetBytes(message);
         udpClient.Send(data, data.Length, remoteEndPoint);
-        Debug.Log("Message sent");
+        //Debug.Log("Message sent");
     }
 
     void UpdateStatesArray(int[] states)
