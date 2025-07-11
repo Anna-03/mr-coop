@@ -4970,8 +4970,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a0eb8d871b2e5540a42aee52899cec0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodeMCUManagerObj: {fileID: 782628376}
-  fxManagerObj: {fileID: 278895520}
+  nodeMCUManager: {fileID: 782628376}
+  fxManager: {fileID: 278895520}
+  allWiresValid: 0
 --- !u!4 &2018253391
 Transform:
   m_ObjectHideFlags: 0
