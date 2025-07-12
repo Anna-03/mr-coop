@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Linq;
+using UnityEditor.Callbacks;
 
 public class GameLogicManager : MonoBehaviour
 {
@@ -56,9 +58,43 @@ public class GameLogicManager : MonoBehaviour
     public Wire wire2 = new Wire();
     public bool allWiresValid = false;
 
+    public GameObject[] pillars;
+    public GameObject[] unorderedPillars;
+    public GameObject[] stationsFlat;
+    public GameObject[] unorderedStations;
+    public GameObject[] socketsFlat;
+    public GameObject[] unorderedSockets;
+    public GameObject[,] sockets = new GameObject[5, 5];
+    public GameObject[,] stations = new GameObject[3, 5];
+
     // Start is called before the first frame update
     void Start()
     {
+        unorderedPillars = GameObject.FindGameObjectsWithTag("Pillar");
+        pillars = unorderedPillars.OrderBy(pi => pi.name).ToArray();
+        unorderedStations = GameObject.FindGameObjectsWithTag("Station");
+        stationsFlat = unorderedStations.OrderBy(st => st.name).ToArray();
+        unorderedSockets = GameObject.FindGameObjectsWithTag("Socket");
+        socketsFlat = unorderedSockets.OrderBy(so => so.name).ToArray();
+
+        for (int column = 0; column < 5; column++)
+        {
+            for (int row = 0; row < 5; row++)
+            {
+                int index = column * 5 + row; // Column-major order
+                sockets[row, column] = socketsFlat[index];
+                fxManager.changeSocketState(row, column, 0);
+            }
+        }
+        for (int column = 0; column < 5; column++)
+        {
+            for (int row = 0; row < 3; row++)
+            {
+                int index = column * 3 + row; // Column-major order
+                stations[row, column] = stationsFlat[index];
+            }
+        }
+
         //currentValues = nodeMCUManager.statesArray;
         // TEST
         currentValues = new int[,]{
@@ -81,30 +117,28 @@ public class GameLogicManager : MonoBehaviour
             {
                 if (previousValues[row, column] != currentValues[row, column])
                 {
-                    if (currentValues[row, column] != -1)
+                    if (currentValues[row, column] == -1)
                     {
-                        connectSocket(row, column, currentValues[row, column]);
-
+                        disconnectSocket(row, column, previousValues[row, column]);
                     }
-                    previousValues[row, column] = currentValues[row, column];
                 }
             }
         }
-
         for (int row = 0; row < 5; row++)
         {
             for (int column = 0; column < 5; column++)
             {
                 if (previousValues[row, column] != currentValues[row, column])
                 {
-                    if (currentValues[row, column] == -1)
+                    if (currentValues[row, column] != -1)
                     {
-                        disconnectSocket(row, column, previousValues[row, column]);
+                        connectSocket(row, column, currentValues[row, column]);
                     }
-                    previousValues[row, column] = currentValues[row, column];
                 }
+                previousValues[row, column] = currentValues[row, column];
             }
         }
+
 
         // TESTING
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
@@ -116,11 +150,12 @@ public class GameLogicManager : MonoBehaviour
         {
             currentValues = new int[,]{
             {-1, -1,  0, -1, -1},
-            {-1, -1,  1, -1, -1},
-            {-1, -1, -1, -1,  2},
+            {-1, -1,  2, -1, -1},
+            {-1, -1, -1, -1,  1},
             {-1, -1, -1, -1,  4},
             { 3, -1, -1, -1, -1},
             };
+
         }
         if (Keyboard.current.digit2Key.wasPressedThisFrame)
         {
@@ -131,6 +166,7 @@ public class GameLogicManager : MonoBehaviour
             {-1, -1, -1, -1, -1},
             {-1,  1, -1, -1, -1},
             };
+
         }
         // Disconnect
         if (Keyboard.current.digit3Key.wasPressedThisFrame)
@@ -142,6 +178,7 @@ public class GameLogicManager : MonoBehaviour
             {-1, -1, -1, -1, -1},
             {-1, -1, -1, -1, -1},
             };
+
         }
         // Reconnect
         if (Keyboard.current.digit4Key.wasPressedThisFrame)
@@ -153,6 +190,7 @@ public class GameLogicManager : MonoBehaviour
             {-1, -1, -1, -1,  3},
             { 4, -1, -1, -1, -1},
             };
+
         }
         if (currentButtonState == true && previousButtonState == false)
         {
@@ -165,140 +203,92 @@ public class GameLogicManager : MonoBehaviour
 
     void disconnectSocket(int disconnectedRow, int disconnectedColumn, int id)
     {
-        int otherRow = -1;
-        int otherColumn = -1;
-        bool otherEndIsConnected = false;
-
         switch (id)
         {
             case 0:
-                wireStart.connectedRow = -1;
+                wireStart.connectedColumn = -1;
+                fxManager.disconnectStartWire(disconnectedColumn);
+
                 break;
             case 1:
                 wire1.connection1[0] = -1;
                 wire1.connection1[1] = -1;
+                if (wire1.connection2[0] != -1)
+                {
+                    fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, wire1.connection2[0], wire1.connection2[1]);
+                }
                 break;
             case 2:
                 wire1.connection2[0] = -1;
                 wire1.connection2[1] = -1;
+                if (wire1.connection1[0] != -1)
+                {
+                    fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, wire1.connection1[0], wire1.connection1[1]);
+                }
                 break;
             case 3:
                 wire2.connection1[0] = -1;
                 wire2.connection1[1] = -1;
+                if (wire2.connection2[0] != -1)
+                {
+                    fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, wire2.connection2[0], wire2.connection2[1]);
+                }
                 break;
             case 4:
                 wire2.connection2[0] = -1;
                 wire2.connection2[1] = -1;
+                if (wire2.connection1[0] != -1)
+                {
+                    fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, wire2.connection1[0], wire2.connection1[1]);
+                }
                 break;
-
         }
-
-        for (int row = 0; row < 5; row++)
-        {
-            for (int column = 0; column < 5; column++)
-            {
-                if (id == 0)
-                {
-                    fxManager.disconnectStartWire(column);
-                    break;
-                }
-                else if (id % 2 == 0) // id is even
-                {
-                    if ((currentValues[row, column] == id - 1))
-                    {
-                        otherEndIsConnected = true;
-                        otherRow = row;
-                        otherColumn = column;
-                        break;
-                    }
-                }
-                else
-                {
-                    if ((currentValues[row, column] == id + 1))
-                    {
-                        otherEndIsConnected = true;
-                        otherRow = row;
-                        otherColumn = column;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (otherEndIsConnected)
-        {
-            fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, otherRow, otherColumn);
-        }
-
         fxManager.changeSocketState(disconnectedRow, disconnectedColumn, 0);
     }
 
     void connectSocket(int connectedRow, int connectedColumn, int id)
     {
-        int otherRow = -1;
-        int otherColumn = -1;
-        bool otherEndIsConnected = false;
 
         switch (id)
         {
             case 0:
-                wireStart.connectedRow = connectedColumn;
+                wireStart.connectedColumn = connectedColumn;
+                fxManager.connectStartWire(connectedColumn);
+
                 break;
             case 1:
                 wire1.connection1[0] = connectedRow;
                 wire1.connection1[1] = connectedColumn;
+                if (wire1.connection2[0] != -1)
+                {
+                    fxManager.connectFullWire(connectedRow, connectedColumn, wire1.connection2[0], wire1.connection2[1]);
+                }
                 break;
             case 2:
                 wire1.connection2[0] = connectedRow;
                 wire1.connection2[1] = connectedColumn;
+                if (wire1.connection1[0] != -1)
+                {
+                    fxManager.connectFullWire(connectedRow, connectedColumn, wire1.connection1[0], wire1.connection1[1]);
+                }
                 break;
             case 3:
                 wire2.connection1[0] = connectedRow;
                 wire2.connection1[1] = connectedColumn;
+                if (wire2.connection2[0] != -1)
+                {
+                    fxManager.connectFullWire(connectedRow, connectedColumn, wire2.connection2[0], wire2.connection2[1]);
+                }
                 break;
             case 4:
                 wire2.connection2[0] = connectedRow;
                 wire2.connection2[1] = connectedColumn;
+                if (wire2.connection1[0] != -1)
+                {
+                    fxManager.connectFullWire(connectedRow, connectedColumn, wire2.connection1[0], wire2.connection1[1]);
+                }
                 break;
         }
-
-        for (int row = 0; row < 5; row++)
-        {
-            for (int column = 0; column < 5; column++)
-            {
-                if (id == 0)
-                {
-                    fxManager.connectStartWire(column);
-                    break;
-                }
-                else if (id % 2 == 0) // id is even
-                {
-                    if ((currentValues[row, column] == id - 1))
-                    {
-                        otherEndIsConnected = true;
-                        otherRow = row;
-                        otherColumn = column;
-                        break;
-                    }
-                }
-                else
-                {
-                    if ((currentValues[row, column] == id + 1))
-                    {
-                        otherEndIsConnected = true;
-                        otherRow = row;
-                        otherColumn = column;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (otherEndIsConnected)
-        {
-            fxManager.connectFullWire(connectedRow, connectedColumn, otherRow, otherColumn);
-        }
-
         fxManager.changeSocketState(connectedRow, connectedColumn, 1);
     }
 
@@ -327,14 +317,15 @@ public class GameLogicManager : MonoBehaviour
         wire2.isValid = false;
         allWiresValid = false;
 
-        if (wireStart.connectedRow != -1)
+        // check if wireStart has is connected and is valid
+        if (wireStart.connectedColumn != -1)
         {
-            if (currentMask[0, wireStart.connectedRow] == 1)
+            if (currentMask[0, wireStart.connectedColumn] == 1)
             {
                 wireStart.isValid = true;
             }
         }
-
+        // check if wires are connected and a potential correct position
         if (wire1.connection1[0] != -1 && wire1.connection2[0] != -1)
         {
             if (currentMask[wire1.connection1[0], wire1.connection1[1]] == 1 && currentMask[wire1.connection2[0], wire1.connection2[1]] == 1)
@@ -351,6 +342,7 @@ public class GameLogicManager : MonoBehaviour
             }
         }
 
+        // check if wires are one row apart to make sure they are valid
         if (Mathf.Abs(wire1.connection1[0] - wire1.connection2[0]) != 1)
         {
             wire1.isValid = false;
@@ -361,19 +353,63 @@ public class GameLogicManager : MonoBehaviour
             wire2.isValid = false;
         }
 
+        // check if all wires are valid
         if (wireStart.isValid && wire1.isValid && wire2.isValid)
         {
             allWiresValid = true;
         }
 
+        // change states of the sockets a wire is connected to
+        if (wireStart.isValid)
+        {
+            fxManager.changeSocketState(0, wireStart.connectedColumn, 2);
+        }
+        else if (wireStart.connectedColumn != -1)
+        {
+            fxManager.changeSocketState(0, wireStart.connectedColumn, 3);
+        }
+        else if (wire1.connection1[0] != -1 && wire1.connection2[0] != -1)
+        {
+        }
+        if (wire1.isValid)
+        {
+            fxManager.changeSocketState(wire1.connection1[0], wire1.connection1[1], 2);
+            fxManager.changeSocketState(wire1.connection2[0], wire1.connection2[1], 2);
+        }
+        else
+        {
+            if (wire1.connection1[0] != -1)
+            {
+                fxManager.changeSocketState(wire1.connection1[0], wire1.connection1[1], 3);
+            }
+            if (wire1.connection2[0] != -1)
+            {
+                fxManager.changeSocketState(wire1.connection2[0], wire1.connection2[1], 3);
+            }
+        }
+
+        if (wire2.isValid)
+        {
+            fxManager.changeSocketState(wire2.connection1[0], wire2.connection1[1], 2);
+            fxManager.changeSocketState(wire2.connection2[0], wire2.connection2[1], 2);
+        }
+        else
+        {
+            if (wire2.connection1[0] != -1)
+            {
+                fxManager.changeSocketState(wire2.connection1[0], wire2.connection1[1], 3);
+            }
+            if (wire2.connection2[0] != -1)
+            {
+                fxManager.changeSocketState(wire2.connection2[0], wire2.connection2[1], 3);
+            }
+        }
+
         Debug.Log(
-            "wireS: " + wireStart.connectedRow +
+            "wireS: " + wireStart.connectedColumn +
             "\nwire1: " + wire1.connection1[0] + ", " + wire1.connection1[1] + "   " + wire1.connection2[0] + ", " + wire1.connection2[1] +
             "\nwire2: " + wire2.connection1[0] + ", " + wire2.connection1[1] + "   " + wire2.connection2[0] + ", " + wire2.connection2[1]
             );
-
-        //Debug.Log("wire1: " + wire1.connection1[0] + ", " + wire1.connection1[1] + ", " + wire1.connection2[0] + ", " + wire1.connection2[1]);
-        //Debug.Log("wire2: " + wire2.connection1[0] + ", " + wire2.connection1[1] + ", " + wire2.connection2[0] + ", " + wire2.connection2[1]);
 
         Debug.Log("wireStart is valid: ");
         Debug.Log(wireStart.isValid);
@@ -398,6 +434,6 @@ public class Wire
 }
 public class StartWire
 {
-    public int connectedRow = -1;
+    public int connectedColumn = -1;
     public bool isValid = false;
 }
