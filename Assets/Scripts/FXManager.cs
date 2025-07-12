@@ -7,9 +7,12 @@ using System;
 public class FXManager : MonoBehaviour
 {
     public GameLogicManager gameLogicManager;
+    public GameObject pillarsObj;
     GameObject[] pillars;
     GameObject[,] stations = new GameObject[3, 5];
     GameObject[,] sockets = new GameObject[5, 5];
+
+    public LineManager lineStart;
 
     void Start()
     {
@@ -61,7 +64,9 @@ public class FXManager : MonoBehaviour
 
     public void connectFullWire(int connectedRow, int connectedColumn, int otherRow, int otherColumn)
     {
+
         // Debug.Log("Wire has been connected to: " + connectedRow + " , " + connectedColumn);
+
     }
 
     public void disconnectStartWire(int disconnectedColumn)
@@ -71,7 +76,8 @@ public class FXManager : MonoBehaviour
 
     public void connectStartWire(int connectedColumn)
     {
-
+        Vector3 startWireStartPosition = pillarsObj.transform.position + new Vector3(0f, 2.2f, 0f);
+        lineStart.ConnectLine(new Vector3(0f, 2.2f, 0f), sockets[0, connectedColumn].transform.position);
     }
 
 }
