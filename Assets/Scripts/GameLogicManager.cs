@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Linq;
-using UnityEditor.Callbacks;
 
 public class GameLogicManager : MonoBehaviour
 {
@@ -21,6 +20,8 @@ public class GameLogicManager : MonoBehaviour
             {-1, -1, -1, -1, -1},
             {-1, -1, -1, -1, -1},
         };
+
+    // TODO: initialise robot masks with correct connections
     int[,] maskRobot1 = new int[,]{
             {-1, -1,  1, -1, -1},
             {-1, -1,  1, -1, -1},
@@ -95,17 +96,16 @@ public class GameLogicManager : MonoBehaviour
             }
         }
 
-        //currentValues = nodeMCUManager.statesArray;
+        currentValues = nodeMCUManager.statesArray;
         // TEST
-        currentValues = new int[,]{
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-        };
+        // currentValues = new int[,]{
+        //     {-1, -1, -1, -1, -1},
+        //     {-1, -1, -1, -1, -1},
+        //     {-1, -1, -1, -1, -1},
+        //     {-1, -1, -1, -1, -1},
+        //     {-1, -1, -1, -1, -1},
+        // };
         currentButtonState = nodeMCUManager.buttonState;
-        // TODO: initialise robot masks with correct connections
     }
 
     // Update is called once per frame
@@ -172,7 +172,7 @@ public class GameLogicManager : MonoBehaviour
         if (Keyboard.current.digit3Key.wasPressedThisFrame)
         {
             currentValues = new int[,]{
-            {-1, -1, -1, -1, -1},
+            {-1, -1, -1,  0, -1},
             {-1, -1, -1,  2, -1},
             {-1, -1, -1, -1, -1},
             {-1, -1, -1, -1, -1},
@@ -192,11 +192,16 @@ public class GameLogicManager : MonoBehaviour
             };
 
         }
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            currentButtonState = true;
+        }
+        // END TESTING
         if (currentButtonState == true && previousButtonState == false)
         {
             if (validateConnections())
             {
-
+                // start robot
             }
         }
     }
@@ -215,7 +220,7 @@ public class GameLogicManager : MonoBehaviour
                 wire1.connection1[1] = -1;
                 if (wire1.connection2[0] != -1)
                 {
-                    fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, wire1.connection2[0], wire1.connection2[1]);
+                    fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, wire1.connection2[0], wire1.connection2[1], id);
                 }
                 break;
             case 2:
@@ -223,7 +228,7 @@ public class GameLogicManager : MonoBehaviour
                 wire1.connection2[1] = -1;
                 if (wire1.connection1[0] != -1)
                 {
-                    fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, wire1.connection1[0], wire1.connection1[1]);
+                    fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, wire1.connection1[0], wire1.connection1[1], id);
                 }
                 break;
             case 3:
@@ -231,7 +236,7 @@ public class GameLogicManager : MonoBehaviour
                 wire2.connection1[1] = -1;
                 if (wire2.connection2[0] != -1)
                 {
-                    fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, wire2.connection2[0], wire2.connection2[1]);
+                    fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, wire2.connection2[0], wire2.connection2[1], id);
                 }
                 break;
             case 4:
@@ -239,7 +244,7 @@ public class GameLogicManager : MonoBehaviour
                 wire2.connection2[1] = -1;
                 if (wire2.connection1[0] != -1)
                 {
-                    fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, wire2.connection1[0], wire2.connection1[1]);
+                    fxManager.disconnectFullWire(disconnectedRow, disconnectedColumn, wire2.connection1[0], wire2.connection1[1], id);
                 }
                 break;
         }
@@ -261,7 +266,7 @@ public class GameLogicManager : MonoBehaviour
                 wire1.connection1[1] = connectedColumn;
                 if (wire1.connection2[0] != -1)
                 {
-                    fxManager.connectFullWire(connectedRow, connectedColumn, wire1.connection2[0], wire1.connection2[1]);
+                    fxManager.connectFullWire(connectedRow, connectedColumn, wire1.connection2[0], wire1.connection2[1], id);
                 }
                 break;
             case 2:
@@ -269,7 +274,7 @@ public class GameLogicManager : MonoBehaviour
                 wire1.connection2[1] = connectedColumn;
                 if (wire1.connection1[0] != -1)
                 {
-                    fxManager.connectFullWire(connectedRow, connectedColumn, wire1.connection1[0], wire1.connection1[1]);
+                    fxManager.connectFullWire(connectedRow, connectedColumn, wire1.connection1[0], wire1.connection1[1], id);
                 }
                 break;
             case 3:
@@ -277,7 +282,7 @@ public class GameLogicManager : MonoBehaviour
                 wire2.connection1[1] = connectedColumn;
                 if (wire2.connection2[0] != -1)
                 {
-                    fxManager.connectFullWire(connectedRow, connectedColumn, wire2.connection2[0], wire2.connection2[1]);
+                    fxManager.connectFullWire(connectedRow, connectedColumn, wire2.connection2[0], wire2.connection2[1], id);
                 }
                 break;
             case 4:
@@ -285,7 +290,7 @@ public class GameLogicManager : MonoBehaviour
                 wire2.connection2[1] = connectedColumn;
                 if (wire2.connection1[0] != -1)
                 {
-                    fxManager.connectFullWire(connectedRow, connectedColumn, wire2.connection1[0], wire2.connection1[1]);
+                    fxManager.connectFullWire(connectedRow, connectedColumn, wire2.connection1[0], wire2.connection1[1], id);
                 }
                 break;
         }

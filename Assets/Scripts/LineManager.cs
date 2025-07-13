@@ -24,16 +24,43 @@ public class LineManager : MonoBehaviour
 
     void UpdateLineConnecting()
     {
-        // Example: animate from start → end based on t
+        // draws line depending on progress
         lineRenderer.SetPosition(1, Vector3.Lerp(startPosition, endPosition, progress));
     }
- 
+
 
     public void ConnectLine(Vector3 startPos, Vector3 endPos)
     {
+        AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+        float normalizedTime = info.normalizedTime;
         startPosition = startPos;
         endPosition = endPos;
         lineRenderer.SetPosition(0, startPosition);
-        animator.Play("LineEase"); // or use trigger
+        if (normalizedTime >= 1)
+        {
+            animator.CrossFade("LineEaseToOne", 0.0f, 0, 0f);
+        }
+        else
+        {
+            animator.CrossFade("LineEaseToOne", 0.0f, 0, 1f - normalizedTime);
+        }
+    }
+
+
+    public void DisconnectLine(Vector3 startPos, Vector3 endPos)
+    {
+        AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+        float normalizedTime = info.normalizedTime;
+        startPosition = startPos;
+        endPosition = endPos;
+        lineRenderer.SetPosition(0, startPosition);
+        if (normalizedTime >= 1)
+        {
+            animator.CrossFade("LineEaseToZero", 0.0f, 0, 0f);
+        }
+        else
+        {
+            animator.CrossFade("LineEaseToZero", 0.0f, 0, 1f - normalizedTime);
+        }
     }
 }

@@ -13,6 +13,9 @@ public class FXManager : MonoBehaviour
     GameObject[,] sockets = new GameObject[5, 5];
 
     public LineManager lineStart;
+    public LineManager line1;
+    public LineManager line2;
+
 
     void Start()
     {
@@ -57,27 +60,49 @@ public class FXManager : MonoBehaviour
         }
     }
 
-    public void disconnectFullWire(int disconnectedRow, int disconnectedColumn, int otherRow, int otherColumn)
+    public void disconnectFullWire(int disconnectedRow, int disconnectedColumn, int otherRow, int otherColumn, int id)
     {
         // Debug.Log("Wire has been disconnected at: " + disconnectedRow + " , " + disconnectedColumn);
+        Vector3 endPosition = sockets[otherRow, otherColumn].transform.position;
+        Vector3 startPosition = sockets[disconnectedRow, disconnectedColumn].transform.position;
+        if (id < 3) // wire 1
+        {
+            line1.DisconnectLine(startPosition, endPosition);
+        }
+        else // wire 2
+        {
+            line2.DisconnectLine(startPosition, endPosition);
+        }
     }
 
-    public void connectFullWire(int connectedRow, int connectedColumn, int otherRow, int otherColumn)
+    public void connectFullWire(int connectedRow, int connectedColumn, int otherRow, int otherColumn, int id)
     {
 
         // Debug.Log("Wire has been connected to: " + connectedRow + " , " + connectedColumn);
-
+        Vector3 endPosition = sockets[otherRow, otherColumn].transform.position;
+        Vector3 startPosition = sockets[connectedRow, connectedColumn].transform.position;
+        if (id < 3) // wire 1
+        {
+            line1.ConnectLine(startPosition, endPosition);
+        }
+        else // wire 2
+        {
+            line2.ConnectLine(startPosition, endPosition);
+        }
     }
 
     public void disconnectStartWire(int disconnectedColumn)
     {
-
+        Vector3 startWireEndPosition = pillarsObj.transform.position + new Vector3(0f, 2.2f, 0f);
+        Vector3 startWireStartPosition = sockets[0, disconnectedColumn].transform.position;
+        lineStart.DisconnectLine(startWireStartPosition, startWireEndPosition);
     }
 
     public void connectStartWire(int connectedColumn)
     {
-        Vector3 startWireStartPosition = pillarsObj.transform.position + new Vector3(0f, 2.2f, 0f);
-        lineStart.ConnectLine(new Vector3(0f, 2.2f, 0f), sockets[0, connectedColumn].transform.position);
+        Vector3 startWireEndPosition = pillarsObj.transform.position + new Vector3(0f, 2.2f, 0f);
+        Vector3 startWireStartPosition = sockets[0, connectedColumn].transform.position;
+        lineStart.ConnectLine(startWireStartPosition, startWireEndPosition);
     }
 
 }
