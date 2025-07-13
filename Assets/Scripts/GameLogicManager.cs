@@ -47,6 +47,7 @@ public class GameLogicManager : MonoBehaviour
 
     public NodeMCUManagerThread nodeMCUManager;
     public FXManager fxManager;
+    public RobotManager robotManager;
 
     int robotCount = 0;
 
@@ -54,7 +55,7 @@ public class GameLogicManager : MonoBehaviour
     bool previousButtonState = false;
 
 
-    public StartWire wireStart = new StartWire();
+    public WireStart wireStart = new WireStart();
     public Wire wire1 = new Wire();
     public Wire wire2 = new Wire();
     public bool allWiresValid = false;
@@ -192,7 +193,7 @@ public class GameLogicManager : MonoBehaviour
             };
 
         }
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (Keyboard.current.enterKey.wasPressedThisFrame)
         {
             currentButtonState = true;
         }
@@ -202,8 +203,11 @@ public class GameLogicManager : MonoBehaviour
             if (validateConnections())
             {
                 // start robot
+                robotManager.StartBuildingRobot(wireStart, wire1, wire2);
             }
+            currentButtonState = false;
         }
+        previousButtonState = currentButtonState;
     }
 
     void disconnectSocket(int disconnectedRow, int disconnectedColumn, int id)
@@ -425,6 +429,9 @@ public class GameLogicManager : MonoBehaviour
         Debug.Log("wire2 is valid: ");
         Debug.Log(wire2.isValid);
 
+        Debug.Log("all wires valid:: ");
+        Debug.Log(allWiresValid);
+
         return allWiresValid;
 
     }
@@ -437,7 +444,7 @@ public class Wire
     public bool isValid = false;
 
 }
-public class StartWire
+public class WireStart
 {
     public int connectedColumn = -1;
     public bool isValid = false;

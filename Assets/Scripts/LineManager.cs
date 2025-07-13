@@ -18,16 +18,8 @@ public class LineManager : MonoBehaviour
     void Update()
     {
         progress = animator.GetFloat("progress");
-
-        UpdateLineConnecting();
-    }
-
-    void UpdateLineConnecting()
-    {
-        // draws line depending on progress
         lineRenderer.SetPosition(1, Vector3.Lerp(startPosition, endPosition, progress));
     }
-
 
     public void ConnectLine(Vector3 startPos, Vector3 endPos)
     {
