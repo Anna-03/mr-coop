@@ -18,6 +18,8 @@ public class FXManager : MonoBehaviour
     public LineManager line1;
     public LineManager line2;
 
+    [SerializeField]
+    float startHeight = 2.2f;
 
     void Start()
     {
@@ -95,7 +97,7 @@ public class FXManager : MonoBehaviour
 
     public void disconnectStartWire(int disconnectedColumn)
     {
-        Vector3 startWireEndPosition = pillarsObj.transform.position + new Vector3(0f, 2.2f, 0f);
+        Vector3 startWireEndPosition = pillarsObj.transform.position + new Vector3(0f, startHeight, 0f);
         Vector3 startWireStartPosition = sockets[0, disconnectedColumn].transform.position;
         lineStart.DisconnectLine(startWireStartPosition, startWireEndPosition);
     }
@@ -107,26 +109,75 @@ public class FXManager : MonoBehaviour
         lineStart.ConnectLine(startWireStartPosition, startWireEndPosition);
     }
 
-    // public IEnumerator runBuildSequence()
-    // {
+    public IEnumerator runBuildSequence()
+    {
 
-    //     switch (gameLogicManager.robotCount)
-    //     {
-    //         case 0:
-    //             currentRobot = robots[0];
-    //             break;
-    //         case 1:
-    //             currentRobot = robots[1];
-    //             break;
-    //         case 2:
-    //             currentRobot = robots[2];
-    //             break;
-    //         default:
-    //             currentRobot = robots[0];
-    //             break;
-    //     }
-    //     yield return currentRobot.MoveTo();
-    // }
+        switch (gameLogicManager.robotCount)
+        {
+            case 0:
+                currentRobot = robots[0];
+                break;
+            case 1:
+                currentRobot = robots[1];
+                break;
+            case 2:
+                currentRobot = robots[2];
+                break;
+            default:
+                currentRobot = robots[0];
+                break;
+        }
+
+        GameObject[] connectedSockets = new GameObject[]{
+            sockets[0, gameLogicManager.wireStart.connectedColumn],
+            sockets[gameLogicManager.wire1.connection1[0], gameLogicManager.wire1.connection1[1]],
+            sockets[gameLogicManager.wire1.connection2[0], gameLogicManager.wire1.connection2[1]],
+            sockets[gameLogicManager.wire2.connection1[0], gameLogicManager.wire2.connection1[1]],
+            sockets[gameLogicManager.wire2.connection2[0], gameLogicManager.wire2.connection2[1]],
+        };
+
+        Array.Sort(connectedSockets, (a, b) => b.transform.position.y.CompareTo(a.transform.position.y));
+
+        int row3Column = 0;
+        int row4Column = 0;
+        for (int column = 0; column < 5; column++)
+        {
+            if (sockets[3, column] == connectedSockets[3])
+            {
+                row3Column = column;
+            }
+            if (sockets[4, column] == connectedSockets[4])
+            {
+                row4Column = column;
+            }
+        }
+
+
+        currentRobot.ingotMesh.enabled = true;
+        yield return currentRobot.MoveTo(pillarsObj.transform.position + new Vector3(0f, startHeight, 0f), connectedSockets[0].transform.position);
+        // wait for Station Animation
+        currentRobot.ingotMesh.enabled = false;
+        currentRobot.bodyMesh.enabled = true;
+        yield return currentRobot.MoveTo(connectedSockets[1].transform.position, connectedSockets[2].transform.position);
+        // wait for Station Animation
+        currentRobot.bodyMesh.material = currentRobot.materialLookup[row3Column];
+        yield return currentRobot.MoveTo(connectedSockets[3].transform.position, connectedSockets[4].transform.position);
+        // wait for Station Animation
+        currentRobot.itemRendererLookup[row4Column].enabled = true;
+        yield return currentRobot.MoveTo(connectedSockets[4].transform.position, connectedSockets[4].transform.position + new Vector3(0f, 0.2f, 0f)); // maybe replace with jump animation
+
+        
+        gameLogicManager.isBuilding = false;
+        if (gameLogicManager.robotCount < 2)
+        {
+            gameLogicManager.robotCount++;
+        }
+        else
+        {
+            //trigger end scene
+        }
+
+    }
 
 
 }

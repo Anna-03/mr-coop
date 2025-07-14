@@ -14,20 +14,20 @@ public class RobotManager : MonoBehaviour
     public GameObject monocle;
     public GameObject umbrella;
 
-    MeshRenderer ingotMesh;
-    SkinnedMeshRenderer bodyMesh;
-    SkinnedMeshRenderer clubMesh;
-    SkinnedMeshRenderer humanMaskMesh;
-    SkinnedMeshRenderer jetpackMesh;
-    SkinnedMeshRenderer monocleMesh;
-    SkinnedMeshRenderer umbrellaMesh;
-    SkinnedMeshRenderer[] itemRendererLookup;
+    public MeshRenderer ingotMesh;
+    public SkinnedMeshRenderer bodyMesh;
+    public SkinnedMeshRenderer clubMesh;
+    public SkinnedMeshRenderer humanMaskMesh;
+    public SkinnedMeshRenderer jetpackMesh;
+    public SkinnedMeshRenderer monocleMesh;
+    public SkinnedMeshRenderer umbrellaMesh;
+    public SkinnedMeshRenderer[] itemRendererLookup;
 
     public Material ingotMaterial;
     public Material robotBlackMaterial;
     public Material robotWhiteMaterial;
     public Material robotRedMaterial;
-    Material[] materialLookup;
+    public Material[] materialLookup;
 
     public GameObject pillarsObj;
     public GameLogicManager gameLogicManager;
@@ -46,6 +46,7 @@ public class RobotManager : MonoBehaviour
     Wire wire2;
     int row3Column = -1;
     int row4Column = -1;
+    private bool isAnimationDone = false;
 
 
     // Start is called before the first frame update
@@ -70,8 +71,8 @@ public class RobotManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        progress = animator.GetFloat("progress");
-        transform.position = Vector3.Lerp(startPosition, endPosition, progress);
+        // progress = animator.GetFloat("progress");
+        // transform.position = Vector3.Lerp(startPosition, endPosition, progress);
     }
 
     public void StartBuildingRobot(WireStart wS, Wire w1, Wire w2)
@@ -132,20 +133,34 @@ public class RobotManager : MonoBehaviour
         }
         animator.Play("RobotEaseToOne", 0, 0f);
     }
-    public bool ProgressFinished()
+    public void ProgressFinished()
     {
-        Debug.Log("animation done!");
-        atWire++;
-        if (atWire <= 3)
-        {
-            TransformRobot();
-        }
-        return true;
+        isAnimationDone = true;
+        // atWire++;
+        // if (atWire <= 3)
+        // {
+        //     TransformRobot();
+        // }
     }
-    // IEnumerator MoveTo(Vector3 startPosition, Vector3 endPosition)
-    // {
-    //     while (true) {
-            
-    //     }
-    // }
+    public IEnumerator MoveTo(Vector3 startPosition, Vector3 endPosition)
+    {
+        // Start the animation from the beginning
+        animator.Play("RobotEaseToOne", 0, 0f);
+
+        // Keep updating position while the animation is running
+        while (!isAnimationDone)
+        {
+            float progress = animator.GetFloat("progress");
+            transform.position = Vector3.Lerp(startPosition, endPosition, progress);
+            yield return null; // Wait for next frame
+        }
+
+        // Ensure final position is exact
+        transform.position = endPosition;
+
+        // Reset the flag so it's ready for next time
+        isAnimationDone = false;
+        Debug.Log("Robot moving done!");
+
+    }
 }

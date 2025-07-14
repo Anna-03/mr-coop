@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Linq;
+using Oculus;
+
 
 public class GameLogicManager : MonoBehaviour
 {
@@ -30,18 +32,18 @@ public class GameLogicManager : MonoBehaviour
             { 1, -1, -1, -1, -1},
         };
     int[,] maskRobot2 = new int[,]{
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
+            { 1, -1, -1, -1, -1},
+            { 1, -1, -1, -1, -1},
+            {-1, -1,  1, -1, -1},
+            {-1, -1,  1, -1, -1},
+            {-1, -1, -1, -1,  1},
         };
     int[,] maskRobot3 = new int[,]{
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
+            {-1, -1, -1, -1,  1},
+            {-1, -1, -1, -1,  1},
+            {-1, -1, -1,  1, -1},
+            {-1, -1, -1,  1, -1},
+            {-1, -1,  1, -1, -1},
         };
 
 
@@ -50,6 +52,7 @@ public class GameLogicManager : MonoBehaviour
     public RobotManager robotManager;
 
     public int robotCount = 0;
+    public bool isBuilding = false;
 
     bool currentButtonState = false;
     bool previousButtonState = false;
@@ -147,7 +150,7 @@ public class GameLogicManager : MonoBehaviour
             Debug.Log(validateConnections());
         }
         // connect
-        if (Keyboard.current.digit1Key.wasPressedThisFrame)
+        if (Keyboard.current.digit1Key.wasPressedThisFrame || OVRInput.GetDown(OVRInput.Button.One))
         {
             currentValues = new int[,]{
             {-1, -1,  0, -1, -1},
@@ -158,29 +161,30 @@ public class GameLogicManager : MonoBehaviour
             };
 
         }
-        if (Keyboard.current.digit2Key.wasPressedThisFrame)
+        if (Keyboard.current.digit2Key.wasPressedThisFrame || OVRInput.GetDown(OVRInput.Button.Two))
         {
             currentValues = new int[,]{
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1,  2, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1,  1, -1, -1, -1},
+            { 0, -1, -1, -1, -1},
+            { 3, -1, -1, -1, -1},
+            {-1, -1,  4, -1, -1},
+            {-1, -1,  1, -1, -1},
+            {-1, -1, -1, -1,  2},
             };
 
         }
         // Disconnect
-        if (Keyboard.current.digit3Key.wasPressedThisFrame)
+        if (Keyboard.current.digit3Key.wasPressedThisFrame || OVRInput.GetDown(OVRInput.Button.Three))
         {
             currentValues = new int[,]{
-            {-1, -1, -1,  0, -1},
-            {-1, -1, -1,  2, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
+            {-1, -1, -1, -1,  0},
+            {-1, -1, -1, -1,  2},
+            {-1, -1, -1,  1, -1},
+            {-1, -1, -1,  3, -1},
+            {-1, -1,  4, -1, -1},
             };
 
         }
+
         // Reconnect
         if (Keyboard.current.digit4Key.wasPressedThisFrame)
         {
@@ -193,17 +197,19 @@ public class GameLogicManager : MonoBehaviour
             };
 
         }
-        if (Keyboard.current.enterKey.wasPressedThisFrame)
+        if (Keyboard.current.enterKey.wasPressedThisFrame || OVRInput.GetDown(OVRInput.Button.Four))
         {
             currentButtonState = true;
         }
         // END TESTING
-        if (currentButtonState == true && previousButtonState == false)
+        if (currentButtonState && !previousButtonState )
         {
-            if (validateConnections())
+            if (validateConnections() && !isBuilding)
             {
                 // start robot
-                robotManager.StartBuildingRobot(wireStart, wire1, wire2);
+                // robotManager.StartBuildingRobot(wireStart, wire1, wire2);
+                StartCoroutine(fxManager.runBuildSequence());
+                isBuilding = true;
             }
             currentButtonState = false;
         }
@@ -304,7 +310,6 @@ public class GameLogicManager : MonoBehaviour
     bool validateConnections()
     {
         int[,] currentMask;
-        // TODO add robotCount
         switch (robotCount)
         {
             case 0:
