@@ -49,7 +49,7 @@ public class GameLogicManager : MonoBehaviour
     public FXManager fxManager;
     public RobotManager robotManager;
 
-    int robotCount = 0;
+    public int robotCount = 0;
 
     bool currentButtonState = false;
     bool previousButtonState = false;

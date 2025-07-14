@@ -11,6 +11,8 @@ public class FXManager : MonoBehaviour
     GameObject[] pillars;
     GameObject[,] stations = new GameObject[3, 5];
     GameObject[,] sockets = new GameObject[5, 5];
+    public RobotManager[] robots;
+    RobotManager currentRobot;
 
     public LineManager lineStart;
     public LineManager line1;
@@ -104,5 +106,27 @@ public class FXManager : MonoBehaviour
         Vector3 startWireStartPosition = sockets[0, connectedColumn].transform.position;
         lineStart.ConnectLine(startWireStartPosition, startWireEndPosition);
     }
+
+    // public IEnumerator runBuildSequence()
+    // {
+
+    //     switch (gameLogicManager.robotCount)
+    //     {
+    //         case 0:
+    //             currentRobot = robots[0];
+    //             break;
+    //         case 1:
+    //             currentRobot = robots[1];
+    //             break;
+    //         case 2:
+    //             currentRobot = robots[2];
+    //             break;
+    //         default:
+    //             currentRobot = robots[0];
+    //             break;
+    //     }
+    //     yield return currentRobot.MoveTo();
+    // }
+
 
 }

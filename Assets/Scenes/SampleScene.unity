@@ -1818,6 +1818,7 @@ MonoBehaviour:
   robotWhiteMaterial: {fileID: 2100000, guid: 95c1f607f16afef438535ee013fdf189, type: 2}
   robotRedMaterial: {fileID: 2100000, guid: eeb40ef4ddb45554cb3a63cdd1445d15, type: 2}
   pillarsObj: {fileID: 2038538174}
+  gameLogicManager: {fileID: 2018253390}
   startHeight: 2.2
 --- !u!95 &479869271
 Animator:
