@@ -1706,7 +1706,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.05
+    widthMultiplier: 0.02
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -1847,7 +1847,6 @@ MonoBehaviour:
   materialLookup: []
   pillarsObj: {fileID: 2038538174}
   gameLogicManager: {fileID: 2018253390}
-  startHeight: 2.2
 --- !u!95 &479869271
 Animator:
   serializedVersion: 5
@@ -4188,7 +4187,6 @@ MonoBehaviour:
   materialLookup: []
   pillarsObj: {fileID: 2038538174}
   gameLogicManager: {fileID: 2018253390}
-  startHeight: 2.2
 --- !u!4 &1224604433
 Transform:
   m_ObjectHideFlags: 0
@@ -5410,7 +5408,6 @@ MonoBehaviour:
   materialLookup: []
   pillarsObj: {fileID: 2038538174}
   gameLogicManager: {fileID: 2018253390}
-  startHeight: 2.2
 --- !u!4 &1584520329
 Transform:
   m_ObjectHideFlags: 0
@@ -6694,7 +6691,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.05
+    widthMultiplier: 0.02
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -7145,7 +7142,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.05
+    widthMultiplier: 0.02
     widthCurve:
       serializedVersion: 2
       m_Curve:
