@@ -115,6 +115,11 @@ public class GameLogicManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        currentButtonState = nodeMCUManager.buttonState;
+        currentValues = nodeMCUManager.statesArray;
+
+
+
         for (int row = 0; row < 5; row++)
         {
             for (int column = 0; column < 5; column++)

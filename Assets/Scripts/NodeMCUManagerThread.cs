@@ -97,18 +97,50 @@ public class NodeMCUManagerThread : MonoBehaviour
 
     void UpdateStatesArray(int[] states)
     {
-        if (states.Length == 4)
+        if (states[0] == 15)
         {
-            int column = states[0] / 2;
-            statesArray[0, column] = states[2];
-            statesArray[1, column] = states[3];
+            if (states[2] == 1)
+            {
+                buttonState = true;
+                Debug.Log("buttonstate = true");
+            }
+            else
+            {
+                buttonState = false;
+            }
         }
-        else if (states.Length == 5)
+        else
         {
-            int column = states[0] / 2;
-            statesArray[2, column] = states[2];
-            statesArray[3, column] = states[3];
-            statesArray[4, column] = states[4];
+            if (states[0] % 3 == 0)
+            {
+                int column = states[0] / 3;
+                statesArray[0, column] = states[2];
+                statesArray[1, column] = states[3];
+            }
+            if (states[0] % 3 == 1)
+            {
+                int column = states[0] / 3;
+                statesArray[2, column] = states[2];
+                statesArray[3, column] = states[3];
+            }
+            if (states[0] % 3 == 2)
+            {
+                int column = states[0] / 3;
+                statesArray[4, column] = states[2];
+            }
+            // if (states.Length == 3)
+            // {
+            //     int column = states[0] / 3; // I believe that this rounds down because int
+            //     int row = 4;
+            //     statesArray[row, column] = states[2];
+            // }
+            // else if (states.Length == 4)
+            // {
+            //     int column = states[0] / 3; // I believe that this rounds down because int
+            //     int row = states[0] % 3;
+            //     statesArray[row, column] = states[2];
+            //     statesArray[3, column] = states[3];
+            // }
         }
         Debug.Log("messages count: " + states[1]);
 
