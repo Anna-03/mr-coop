@@ -104,7 +104,7 @@ public class FXManager : MonoBehaviour
 
     public void connectStartWire(int connectedColumn)
     {
-        Vector3 startWireEndPosition = pillarsObj.transform.position + new Vector3(0f, 2.2f, 0f);
+        Vector3 startWireEndPosition = pillarsObj.transform.position + new Vector3(0f, startHeight, 0f);
         Vector3 startWireStartPosition = sockets[0, connectedColumn].transform.position;
         lineStart.ConnectLine(startWireStartPosition, startWireEndPosition);
     }
@@ -115,14 +115,14 @@ public class FXManager : MonoBehaviour
         switch (gameLogicManager.robotCount)
         {
             case 0:
-                currentRobot = robots[0];
-                break;
-            case 1:
-                currentRobot = robots[1];
-                break;
-            case 2:
                 currentRobot = robots[2];
                 break;
+            case 1:
+                currentRobot = robots[0];
+                break;
+            // case 2:
+            //     currentRobot = robots[2];
+            //     break;
             default:
                 currentRobot = robots[0];
                 break;
@@ -166,18 +166,33 @@ public class FXManager : MonoBehaviour
         currentRobot.itemRendererLookup[row4Column].enabled = true;
         yield return currentRobot.MoveTo(connectedSockets[4].transform.position, connectedSockets[4].transform.position + new Vector3(0f, 0.2f, 0f)); // maybe replace with jump animation
 
-        
+
         gameLogicManager.isBuilding = false;
-        if (gameLogicManager.robotCount < 2)
+        if (gameLogicManager.robotCount < 1) // TODO: change back to 2 after test
         {
             gameLogicManager.robotCount++;
         }
         else
         {
+            gameLogicManager.robotCount = 0;  // TODO: remove this line, only for testing
+            gameLogicManager.gameIsFinished = true;
             //trigger end scene
         }
 
     }
+    public void ResetRobots()
+    {
+        for (int robotId = 0; robotId < robots.Length; robotId++)
+        {
+            robots[robotId].ingotMesh.enabled = false;
+            robots[robotId].bodyMesh.enabled = false;
+            robots[robotId].bodyMesh.material = robots[robotId].ingotMaterial;
+            for (int itemId = 0; itemId < robots[robotId].itemRendererLookup.Length; itemId++)
+            {
+                robots[robotId].itemRendererLookup[itemId].enabled = false;
+            }
+        }
+    } 
 
 
 }

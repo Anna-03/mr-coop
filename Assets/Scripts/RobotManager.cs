@@ -50,7 +50,7 @@ public class RobotManager : MonoBehaviour
 
         animator = GetComponent<Animator>();
 
-        materialLookup = new Material[] { null, null, robotBlackMaterial, robotWhiteMaterial, robotRedMaterial };
+        materialLookup = new Material[] { null, robotWhiteMaterial, robotBlackMaterial, robotRedMaterial, null };
         itemRendererLookup = new SkinnedMeshRenderer[] { clubMesh, humanMaskMesh, jetpackMesh, monocleMesh, umbrellaMesh };
 
     }

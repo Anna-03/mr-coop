@@ -25,26 +25,26 @@ public class GameLogicManager : MonoBehaviour
 
     // TODO: initialise robot masks with correct connections
     int[,] maskRobot1 = new int[,]{
-            {-1, -1,  1, -1, -1},
-            {-1, -1,  1, -1, -1},
-            {-1, -1, -1, -1,  1},
-            {-1, -1, -1, -1,  1},
+            {-1,  1, -1, -1, -1},
+            {-1,  1, -1, -1, -1},
+            {-1, -1, -1,  1, -1},
+            {-1, -1, -1,  1, -1},
             { 1, -1, -1, -1, -1},
         };
     int[,] maskRobot2 = new int[,]{
-            { 1, -1, -1, -1, -1},
-            { 1, -1, -1, -1, -1},
-            {-1, -1,  1, -1, -1},
-            {-1, -1,  1, -1, -1},
-            {-1, -1, -1, -1,  1},
-        };
-    int[,] maskRobot3 = new int[,]{
-            {-1, -1, -1, -1,  1},
-            {-1, -1, -1, -1,  1},
             {-1, -1, -1,  1, -1},
             {-1, -1, -1,  1, -1},
-            {-1, -1,  1, -1, -1},
+            {-1,  1, -1, -1, -1},
+            {-1,  1, -1, -1, -1},
+            {-1, -1, -1, -1,  1},
         };
+    // int[,] maskRobot3 = new int[,]{
+    //         {-1,  1, -1, -1, -1},
+    //         {-1,  1, -1, -1, -1},
+    //         {-1, -1, -1,  1, -1},
+    //         {-1, -1, -1,  1, -1},
+    //         { 1, -1, -1, -1, -1},
+    //     };
 
 
     public NodeMCUManagerThread nodeMCUManager;
@@ -56,6 +56,7 @@ public class GameLogicManager : MonoBehaviour
 
     bool currentButtonState = false;
     bool previousButtonState = false;
+    public bool gameIsFinished = false;
 
 
     public WireStart wireStart = new WireStart();
@@ -209,7 +210,12 @@ public class GameLogicManager : MonoBehaviour
         // END TESTING
         if (currentButtonState && !previousButtonState )
         {
-            if (validateConnections() && !isBuilding)
+            if (gameIsFinished)
+            {
+                fxManager.ResetRobots();
+                gameIsFinished = false;
+            }
+            else if (validateConnections() && !isBuilding)
             {
                 // start robot
                 // robotManager.StartBuildingRobot(wireStart, wire1, wire2);
@@ -323,9 +329,9 @@ public class GameLogicManager : MonoBehaviour
             case 1:
                 currentMask = maskRobot2;
                 break;
-            case 2:
-                currentMask = maskRobot3;
-                break;
+            // case 2:
+            //     currentMask = maskRobot3;
+            //     break;
             default:
                 currentMask = maskRobot1;
                 break;
