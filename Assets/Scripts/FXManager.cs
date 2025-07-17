@@ -129,11 +129,11 @@ public class FXManager : MonoBehaviour
         }
 
         GameObject[] connectedSockets = new GameObject[]{
-            sockets[0, gameLogicManager.wireStart.connectedColumn],
-            sockets[gameLogicManager.wire1.connection1[0], gameLogicManager.wire1.connection1[1]],
-            sockets[gameLogicManager.wire1.connection2[0], gameLogicManager.wire1.connection2[1]],
-            sockets[gameLogicManager.wire2.connection1[0], gameLogicManager.wire2.connection1[1]],
-            sockets[gameLogicManager.wire2.connection2[0], gameLogicManager.wire2.connection2[1]],
+            sockets[0, gameLogicManager.wireStart.connectedColumn],                                // id =0
+            sockets[gameLogicManager.wire1.connection1[0], gameLogicManager.wire1.connection1[1]], // id =1
+            sockets[gameLogicManager.wire1.connection2[0], gameLogicManager.wire1.connection2[1]], // id =2
+            sockets[gameLogicManager.wire2.connection1[0], gameLogicManager.wire2.connection1[1]], // id =3
+            sockets[gameLogicManager.wire2.connection2[0], gameLogicManager.wire2.connection2[1]], // id =4
         };
 
         Array.Sort(connectedSockets, (a, b) => b.transform.position.y.CompareTo(a.transform.position.y));

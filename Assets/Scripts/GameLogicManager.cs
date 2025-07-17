@@ -212,6 +212,7 @@ public class GameLogicManager : MonoBehaviour
         {
             if (gameIsFinished)
             {
+                // TODO: change for end game 
                 fxManager.ResetRobots();
                 gameIsFinished = false;
             }
