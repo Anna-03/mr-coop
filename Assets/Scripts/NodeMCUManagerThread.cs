@@ -26,8 +26,6 @@ public class NodeMCUManagerThread : MonoBehaviour
     int numMessages;
     private ConcurrentQueue<int[]> receivedStatesQueue = new ConcurrentQueue<int[]>();
 
-    public bool buttonState = false;
-
     void Start()
     {
         for (int row = 0; row < statesArray.GetLength(0); row++)
@@ -92,55 +90,23 @@ public class NodeMCUManagerThread : MonoBehaviour
         string message = "Hello from Unity!";
         byte[] data = Encoding.UTF8.GetBytes(message);
         udpClient.Send(data, data.Length, remoteEndPoint);
-        //Debug.Log("Message sent");
+        Debug.Log("Message sent");
     }
 
     void UpdateStatesArray(int[] states)
     {
-        if (states[0] == 15)
+        if (states.Length == 4)
         {
-            if (states[2] == 1)
-            {
-                buttonState = true;
-                Debug.Log("buttonstate = true");
-            }
-            else
-            {
-                buttonState = false;
-            }
+            int column = states[0] / 2;
+            statesArray[0, column] = states[2];
+            statesArray[1, column] = states[3];
         }
-        else
+        else if (states.Length == 5)
         {
-            if (states[0] % 3 == 0)
-            {
-                int column = states[0] / 3;
-                statesArray[0, column] = states[2];
-                statesArray[1, column] = states[3];
-            }
-            if (states[0] % 3 == 1)
-            {
-                int column = states[0] / 3;
-                statesArray[2, column] = states[2];
-                statesArray[3, column] = states[3];
-            }
-            if (states[0] % 3 == 2)
-            {
-                int column = states[0] / 3;
-                statesArray[4, column] = states[2];
-            }
-            // if (states.Length == 3)
-            // {
-            //     int column = states[0] / 3; // I believe that this rounds down because int
-            //     int row = 4;
-            //     statesArray[row, column] = states[2];
-            // }
-            // else if (states.Length == 4)
-            // {
-            //     int column = states[0] / 3; // I believe that this rounds down because int
-            //     int row = states[0] % 3;
-            //     statesArray[row, column] = states[2];
-            //     statesArray[3, column] = states[3];
-            // }
+            int column = states[0] / 2;
+            statesArray[2, column] = states[2];
+            statesArray[3, column] = states[3];
+            statesArray[4, column] = states[4];
         }
         Debug.Log("messages count: " + states[1]);
 
