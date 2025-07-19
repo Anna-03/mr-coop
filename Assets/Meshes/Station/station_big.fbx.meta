@@ -3,7 +3,22 @@ guid: 71e1f6df64730324582c9779ec5f32bd
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BaseMaterial
+    second: {fileID: 2100000, guid: 3b4586b1deb899d4da0ec466cbb075b1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: LampsSign
+    second: {fileID: 2100000, guid: 43b400a854acdd54e97d13beb56e89b0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: StampSign
+    second: {fileID: 2100000, guid: 3d928e63e68e2454bb2c001c1d06f9f2, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -67,7 +82,7 @@ ModelImporter:
     secondaryUVMinLightmapResolution: 40
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
-    useFileScale: 1
+    useFileScale: 0
     strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
