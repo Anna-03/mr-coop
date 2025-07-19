@@ -3,7 +3,17 @@ guid: 68748be81cd87d84d8e977dda7170b12
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Jetpack
+    second: {fileID: 2100000, guid: 31cb34ae4be445b4e9fba863bcd6f7c3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Robot
+    second: {fileID: 2100000, guid: 5dceb1b6d4f26f64aa98a73bbcc6b9b1, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

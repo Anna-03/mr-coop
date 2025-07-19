@@ -3,7 +3,17 @@ guid: 6fd37925e3d31e7458825b85e4fceb05
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Robot
+    second: {fileID: 2100000, guid: 047d839957815f440aab2f369b3d36c0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Umbrella
+    second: {fileID: 2100000, guid: 1e57a1bb1121e71469d1a15e70895057, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
