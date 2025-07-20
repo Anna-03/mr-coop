@@ -153,17 +153,23 @@ public class FXManager : MonoBehaviour
         }
 
 
+
         currentRobot.ingotMesh.enabled = true;
-        yield return currentRobot.MoveTo(pillarsObj.transform.position + new Vector3(0f, startHeight, 0f), connectedSockets[0].transform.position);
+        // moving from middle top to first station input
+        yield return hook.MoveTo(pillarsObj.transform.position + new Vector3(0f, startHeight, 0f), connectedSockets[0].transform.position);
+        //yield return currentRobot.MoveTo(pillarsObj.transform.position + new Vector3(0f, startHeight, 0f), connectedSockets[0].transform.position);
         // wait for Station Animation
         currentRobot.ingotMesh.enabled = false;
         currentRobot.bodyMesh.enabled = true;
+        // moving from first station ouput to second station input
         yield return currentRobot.MoveTo(connectedSockets[1].transform.position, connectedSockets[2].transform.position);
         // wait for Station Animation
         currentRobot.bodyMesh.material = currentRobot.materialLookup[row3Column];
+        // moving from second station output to third station input
         yield return currentRobot.MoveTo(connectedSockets[3].transform.position, connectedSockets[4].transform.position);
         // wait for Station Animation
         currentRobot.itemRendererLookup[row4Column].enabled = true;
+        // robot jumps out of third station
         yield return currentRobot.MoveTo(connectedSockets[4].transform.position, connectedSockets[4].transform.position + new Vector3(0f, 0.2f, 0f)); // maybe replace with jump animation
 
 
@@ -192,7 +198,7 @@ public class FXManager : MonoBehaviour
                 robots[robotId].itemRendererLookup[itemId].enabled = false;
             }
         }
-    } 
+    }
 
 
 }
