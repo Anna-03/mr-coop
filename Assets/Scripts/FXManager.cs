@@ -181,14 +181,24 @@ public class FXManager : MonoBehaviour
             }
         }
 
-
-
         currentRobot.ingotMesh.enabled = true;
+
         // moving from middle top to first station input
         yield return currentRobot.MoveTo(pillarsObj.transform.position + new Vector3(0f, startHeight, 0f), connectedSockets[0].transform.position);
-        GameObject visual = connectedSockets[0].transform.Find("visual");
-        Renderer station = visual.transform.Find("Station").GetComponent<Renderer>();
-        station.materials[0].color = Color.blue;
+
+
+
+        // animate the wobble
+        animator = stationObject.parent.GetComponent<Animator>();
+        if (animator != null){
+          animator.SetTrigger("PlayWobble");
+          Debug.LogWarning("Wobble wobble.");
+          yield return new WaitForSeconds(0.5f);
+        } else{Debug.LogWarning("Animator not found.");}
+
+
+
+
         // wait for Station Animation
         currentRobot.ingotMesh.enabled = false;
         currentRobot.bodyMesh.enabled = true;
