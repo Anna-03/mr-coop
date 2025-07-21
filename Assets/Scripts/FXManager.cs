@@ -13,11 +13,18 @@ public class FXManager : MonoBehaviour
     GameObject[,] sockets = new GameObject[5, 5];
     public RobotManager[] robots;
     RobotManager currentRobot;
-    GameObject[] visuals;
 
     public LineManager lineStart;
     public LineManager line1;
     public LineManager line2;
+
+    Material lightGreen;
+    Material lightRed;
+    Material lightOff;
+    Material lightOn;
+
+    Animator animator;
+    Transform stationObject;
 
     [SerializeField]
     float startHeight = 2.2f;
@@ -28,6 +35,11 @@ public class FXManager : MonoBehaviour
         pillars = gameLogicManager.pillars;
         stations = gameLogicManager.stations;
         sockets = gameLogicManager.sockets;
+
+        lightRed = Resources.Load<Material>("Materials/Stations/M_LampFalse");
+        lightGreen = Resources.Load<Material>("Materials/Stations/M_LampTrue");
+        lightOff = Resources.Load<Material>("Materials/Stations/M_LampOFF");
+        lightOn = Resources.Load<Material>("Materials/Stations/M_LampConnected");
 
     }
 
@@ -40,20 +52,25 @@ public class FXManager : MonoBehaviour
         GameObject socket = sockets[row, column];
         Renderer renderer = socket.GetComponent<Renderer>();
         Color color = Color.gray;
+        Material lampMat = lightOff;
         // state: 0 = off, 1 = connected, 2 = correct connection, 3 = wrong connection
         switch (state)
         {
             case 0:
                 color = Color.gray;
+                lampMat = lightOff;
                 break;
             case 1:
                 color = Color.white;
+                lampMat = lightOn;
                 break;
             case 2:
                 color = Color.green;
+                lampMat = lightGreen;
                 break;
             case 3:
                 color = Color.red;
+                lampMat = lightRed;
                 break;
             default:
                 break;
@@ -62,7 +79,18 @@ public class FXManager : MonoBehaviour
         {
             Material mat = renderer.material;
             mat.color = color;
+            stationObject = socket.transform.parent.Find("visual/Station");
+            if (stationObject != null){
+              Renderer rend = stationObject.GetComponent<Renderer>();
+              if (rend != null){
+                // 0 is main body, 1 is display, 2 is lamps
+                rend.materials[0] = lampMat;
+                rend.materials[1] = lampMat;
+                rend.materials[2] = lampMat;
+              } else{Debug.LogWarning("Renderer not found on stationObject.");}
+            } else{Debug.LogWarning("Could not find child path: visual/Station");}
         }
+
     }
 
     public void disconnectFullWire(int disconnectedRow, int disconnectedColumn, int otherRow, int otherColumn, int id)
