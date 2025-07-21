@@ -13,6 +13,7 @@ public class FXManager : MonoBehaviour
     GameObject[,] sockets = new GameObject[5, 5];
     public RobotManager[] robots;
     RobotManager currentRobot;
+    GameObject[] visuals;
 
     public LineManager lineStart;
     public LineManager line1;
@@ -156,8 +157,10 @@ public class FXManager : MonoBehaviour
 
         currentRobot.ingotMesh.enabled = true;
         // moving from middle top to first station input
-        yield return hook.MoveTo(pillarsObj.transform.position + new Vector3(0f, startHeight, 0f), connectedSockets[0].transform.position);
-        //yield return currentRobot.MoveTo(pillarsObj.transform.position + new Vector3(0f, startHeight, 0f), connectedSockets[0].transform.position);
+        yield return currentRobot.MoveTo(pillarsObj.transform.position + new Vector3(0f, startHeight, 0f), connectedSockets[0].transform.position);
+        GameObject visual = connectedSockets[0].transform.Find("visual");
+        Renderer station = visual.transform.Find("Station").GetComponent<Renderer>();
+        station.materials[0].color = Color.blue;
         // wait for Station Animation
         currentRobot.ingotMesh.enabled = false;
         currentRobot.bodyMesh.enabled = true;
