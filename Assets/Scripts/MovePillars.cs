@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Meta.XR.ImmersiveDebugger;
+
 
 using Oculus;
 
@@ -8,15 +10,48 @@ public class MovePillarsWithRightJoystick : MonoBehaviour
 {
     public float moveSpeed = 1.5f;
     public float radius = 1f;
+    bool anchorInitialized = false;
+    float delaySeconds = 1f;
+    string rootName = "PillarsRoot";
     void Start()
     {
         placePillars();
+        StartCoroutine(DelayedAnchorSetup());
+    }
+    private IEnumerator DelayedAnchorSetup()
+    {
+        yield return new WaitForSeconds(delaySeconds);
+        InitializeAnchor();
+    }
+
+    private void InitializeAnchor()
+    {
+        if (anchorInitialized) return; // Prevent duplicate runs
+        anchorInitialized = true;
+
+        // Create root at current position/rotation
+        GameObject pillarsRoot = new GameObject(rootName);
+        pillarsRoot.transform.SetPositionAndRotation(transform.position, transform.rotation);
+
+        // Add runtime anchor
+        pillarsRoot.AddComponent<OVRSpatialAnchor>();
+
+        // Re-parent this object (Pillars) under the new anchored root
+        transform.SetParent(pillarsRoot.transform, worldPositionStays: true);
+
+        Debug.Log("Pillars anchored under '" + rootName + "'");
     }
     void Update()
     {
         // InputRight vom rechten Joystick holen
         Vector2 inputRight = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
         Vector2 inputLeft = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
+
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger))
+        {
+            AlignToHeadset();
+            Debug.Log(transform.position.y);
+        }
 
         if (inputRight.magnitude > 0.1f)
         {
@@ -53,7 +88,7 @@ public class MovePillarsWithRightJoystick : MonoBehaviour
     }
     void placePillars()
     {
-                int childCount = transform.childCount;
+        int childCount = transform.childCount;
         float angleStep = 360f / childCount;
 
         for (int i = 0; i < childCount; i++)
@@ -65,9 +100,9 @@ public class MovePillarsWithRightJoystick : MonoBehaviour
 
             // Position on circle
             Vector3 position = new Vector3(
-                Mathf.Cos(angle) * radius,
+                Mathf.Sin(angle) * radius, // X
                 0f,
-                Mathf.Sin(angle) * radius
+                Mathf.Cos(angle) * radius  // Z
             );
 
             child.localPosition = position;
@@ -75,5 +110,18 @@ public class MovePillarsWithRightJoystick : MonoBehaviour
             // Make the pillar face the center (0,0,0 relative to parent)
             child.LookAt(transform.position);
         }
+    }
+    void AlignToHeadset()
+    {
+        // Get headset (main camera) transform
+        Transform cameraTransform = Camera.main.transform;
+
+        // Match X and Z position, keep this object's Y position
+        Vector3 newPosition = new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
+        transform.position = newPosition;
+
+        // Match Y-axis (yaw) rotation, ignore pitch and roll
+        float cameraYaw = cameraTransform.eulerAngles.y;
+        transform.rotation = Quaternion.Euler(0, cameraYaw, 0);
     }
 }
