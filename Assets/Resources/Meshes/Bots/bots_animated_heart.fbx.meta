@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6fd37925e3d31e7458825b85e4fceb05
+guid: 2213aa9b5bc7aaa43aa8d9b8c3cc9b9b
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,13 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Robot
-    second: {fileID: 2100000, guid: 047d839957815f440aab2f369b3d36c0, type: 2}
+      name: Club
+    second: {fileID: 2100000, guid: 77510432ee70f924687a6932c002a1fb, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Umbrella
-    second: {fileID: 2100000, guid: 1e57a1bb1121e71469d1a15e70895057, type: 2}
+      name: Robot
+    second: {fileID: 2100000, guid: be059b6f446ac4943922c050bc631587, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -77,7 +77,7 @@ ModelImporter:
     secondaryUVMinLightmapResolution: 40
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
-    useFileScale: 1
+    useFileScale: 0
     strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60

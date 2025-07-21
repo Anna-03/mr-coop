@@ -72,6 +72,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1592014567426846597}
+  - component: {fileID: -8537688033671654455}
   m_Layer: 0
   m_Name: station_small
   m_TagString: Untagged
@@ -97,6 +98,27 @@ Transform:
   - {fileID: 104264367860156469}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &-8537688033671654455
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2115610441924818239}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1759d8ae87a325b4e956fdc2d9a58143, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2417077588097480139
 GameObject:
   m_ObjectHideFlags: 0
@@ -309,7 +331,7 @@ GameObject:
   - component: {fileID: 1219624494335676968}
   - component: {fileID: 3220924156361479464}
   m_Layer: 0
-  m_Name: StationSmall
+  m_Name: Station
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7334546640526500019}
   - component: {fileID: 1234660650120343684}
   m_Layer: 0
-  m_Name: StationBig
+  m_Name: Station
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -406,6 +406,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7876828109106821867}
+  - component: {fileID: 7394731513275612106}
   m_Layer: 0
   m_Name: station_big
   m_TagString: Untagged
@@ -432,6 +433,27 @@ Transform:
   - {fileID: 859652047992599545}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &7394731513275612106
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7357700649392267345}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1759d8ae87a325b4e956fdc2d9a58143, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &9041692632383087575
 GameObject:
   m_ObjectHideFlags: 0
