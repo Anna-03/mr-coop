@@ -239,7 +239,7 @@ public class GameLogicManager : MonoBehaviour
         {
             case 0:
                 wireStart.connectedColumn = -1;
-                fxManager.disconnectStartWire(disconnectedColumn);
+                fxManager.disconnectStartWire(disconnectedRow, disconnectedColumn);
 
                 break;
             case 1:
@@ -285,7 +285,7 @@ public class GameLogicManager : MonoBehaviour
         {
             case 0:
                 wireStart.connectedColumn = connectedColumn;
-                fxManager.connectStartWire(connectedColumn);
+                fxManager.connectStartWire(connectedRow, connectedColumn);
 
                 break;
             case 1:

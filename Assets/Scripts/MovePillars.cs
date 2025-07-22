@@ -55,7 +55,6 @@ public class MovePillarsWithRightJoystick : MonoBehaviour
         if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger))
         {
             AlignToHeadset();
-            Debug.Log(transform.position.y);
         }
 
         if (inputRight.magnitude > 0.1f)

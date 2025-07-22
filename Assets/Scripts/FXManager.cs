@@ -104,7 +104,7 @@ public class FXManager : MonoBehaviour
         }
     }
 
-    public void disconnectStartWire(int disconnectedColumn)
+    public void disconnectStartWire(int disconnectedRow, int disconnectedColumn)
     {
         Vector3 startWireEndPosition = pillarsObj.transform.position + new Vector3(0f, startHeight, 0f);
         Vector3 startWireStartPosition = sockets[0, disconnectedColumn].transform.position;
@@ -112,12 +112,12 @@ public class FXManager : MonoBehaviour
         lineStart.DisconnectLine();
     }
 
-    public void connectStartWire(int connectedColumn)
+    public void connectStartWire(int connectedRow, int connectedColumn)
     {
         Vector3 startWireEndPosition = pillarsObj.transform.position + new Vector3(0f, startHeight, 0f);
         Vector3 startWireStartPosition = sockets[0, connectedColumn].transform.position;
         // lineStart.ConnectLine(startWireStartPosition, startWireEndPosition);
-        lineStart.ConnectLine(sockets[0, connectedColumn]);
+        lineStart.ConnectLine(sockets[connectedRow, connectedColumn]);
     }
 
     public IEnumerator runBuildSequence()
