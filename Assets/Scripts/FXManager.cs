@@ -202,14 +202,16 @@ public class FXManager : MonoBehaviour
         // wait for Station Animation
         currentRobot.ingotMesh.enabled = false;
         currentRobot.bodyMesh.enabled = true;
+        currentRobot.bodyMesh.material = currentRobot.robotMaterialRaw;
+
         // moving from first station ouput to second station input
         yield return currentRobot.MoveTo(connectedSockets[1].transform.position, connectedSockets[2].transform.position);
         // wait for Station Animation
-        currentRobot.bodyMesh.material = currentRobot.materialLookup[row3Column];
+        currentRobot.bodyMesh.material = currentRobot.robotMaterialPainted;
         // moving from second station output to third station input
         yield return currentRobot.MoveTo(connectedSockets[3].transform.position, connectedSockets[4].transform.position);
         // wait for Station Animation
-        currentRobot.itemRendererLookup[row4Column].enabled = true;
+        currentRobot.itemMesh.enabled = true;
         // robot jumps out of third station
         yield return currentRobot.MoveTo(connectedSockets[4].transform.position, connectedSockets[4].transform.position + new Vector3(0f, 0.2f, 0f)); // maybe replace with jump animation
 
@@ -234,10 +236,8 @@ public class FXManager : MonoBehaviour
             robots[robotId].ingotMesh.enabled = false;
             robots[robotId].bodyMesh.enabled = false;
             robots[robotId].bodyMesh.material = robots[robotId].ingotMaterial;
-            for (int itemId = 0; itemId < robots[robotId].itemRendererLookup.Length; itemId++)
-            {
-                robots[robotId].itemRendererLookup[itemId].enabled = false;
-            }
+            robots[robotId].itemMesh.enabled = false;
+
         }
     }
 
