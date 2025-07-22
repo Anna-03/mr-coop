@@ -6,28 +6,23 @@ using UnityEngine;
 
 public class RobotManager : MonoBehaviour
 {
+    public GameObject hook;
+
     public GameObject ingot;
     public GameObject body;
-    public GameObject club;
-    public GameObject humanMask;
-    public GameObject jetpack;
-    public GameObject monocle;
-    public GameObject umbrella;
+    public GameObject item;
 
+    public MeshRenderer hookMesh;
     public MeshRenderer ingotMesh;
     public SkinnedMeshRenderer bodyMesh;
-    public SkinnedMeshRenderer clubMesh;
-    public SkinnedMeshRenderer humanMaskMesh;
-    public SkinnedMeshRenderer jetpackMesh;
-    public SkinnedMeshRenderer monocleMesh;
-    public SkinnedMeshRenderer umbrellaMesh;
-    public SkinnedMeshRenderer[] itemRendererLookup;
+
+    public SkinnedMeshRenderer itemMesh;
 
     public Material ingotMaterial;
-    public Material robotBlackMaterial;
-    public Material robotWhiteMaterial;
-    public Material robotRedMaterial;
-    public Material[] materialLookup;
+
+    public Material robotMaterialRaw;
+    public Material robotMaterialPainted;
+    public Material itemMaterial;
 
     public GameObject pillarsObj;
     public GameLogicManager gameLogicManager;
@@ -42,16 +37,10 @@ public class RobotManager : MonoBehaviour
     {
         ingotMesh = ingot.GetComponent<MeshRenderer>();
         bodyMesh = body.GetComponent<SkinnedMeshRenderer>();
-        clubMesh = club.GetComponent<SkinnedMeshRenderer>();
-        humanMaskMesh = humanMask.GetComponent<SkinnedMeshRenderer>();
-        jetpackMesh = jetpack.GetComponent<SkinnedMeshRenderer>();
-        monocleMesh = monocle.GetComponent<SkinnedMeshRenderer>();
-        umbrellaMesh = umbrella.GetComponent<SkinnedMeshRenderer>();
+        itemMesh = item.GetComponent<SkinnedMeshRenderer>();
+        hookMesh = hook.GetComponent<MeshRenderer>();
 
         animator = GetComponent<Animator>();
-
-        materialLookup = new Material[] { null, robotWhiteMaterial, robotBlackMaterial, robotRedMaterial, null };
-        itemRendererLookup = new SkinnedMeshRenderer[] { clubMesh, humanMaskMesh, jetpackMesh, monocleMesh, umbrellaMesh };
 
     }
 

@@ -20,6 +20,14 @@ public class FXManager : MonoBehaviour
     public LineManager line1;
     public LineManager line2;
 
+    Material lightGreen;
+    Material lightRed;
+    Material lightOff;
+    Material lightOn;
+
+    Animator animator;
+    Transform stationObject;
+
     [SerializeField]
     float startHeight = 2.08f;
 
@@ -29,6 +37,11 @@ public class FXManager : MonoBehaviour
         pillars = gameLogicManager.pillars;
         stations = gameLogicManager.stations;
         sockets = gameLogicManager.sockets;
+
+        lightRed = Resources.Load<Material>("Materials/Stations/M_LampFalse");
+        lightGreen = Resources.Load<Material>("Materials/Stations/M_LampTrue");
+        lightOff = Resources.Load<Material>("Materials/Stations/M_LampOFF");
+        lightOn = Resources.Load<Material>("Materials/Stations/M_LampConnected");
 
     }
 
@@ -41,20 +54,25 @@ public class FXManager : MonoBehaviour
         GameObject socket = sockets[row, column];
         Renderer renderer = socket.GetComponent<Renderer>();
         Color color = Color.gray;
+        Material lampMat = lightOff;
         // state: 0 = off, 1 = connected, 2 = correct connection, 3 = wrong connection
         switch (state)
         {
             case 0:
                 color = Color.gray;
+                lampMat = lightOff;
                 break;
             case 1:
                 color = Color.white;
+                lampMat = lightOn;
                 break;
             case 2:
                 color = Color.green;
+                lampMat = lightGreen;
                 break;
             case 3:
                 color = Color.red;
+                lampMat = lightRed;
                 break;
             default:
                 break;
@@ -63,7 +81,18 @@ public class FXManager : MonoBehaviour
         {
             Material mat = renderer.material;
             mat.color = color;
+            stationObject = socket.transform.parent.Find("visual/Station");
+            if (stationObject != null){
+              Renderer rend = stationObject.GetComponent<Renderer>();
+              if (rend != null){
+                // 0 is main body, 1 is display, 2 is lamps
+                rend.materials[0] = lampMat;
+                rend.materials[1] = lampMat;
+                rend.materials[2] = lampMat;
+              } else{Debug.LogWarning("Renderer not found on stationObject.");}
+            } else{Debug.LogWarning("Could not find child path: visual/Station");}
         }
+
     }
 
     public void disconnectFullWire(int disconnectedRow, int disconnectedColumn, int otherRow, int otherColumn, int id)
@@ -163,18 +192,40 @@ public class FXManager : MonoBehaviour
             }
         }
 
-
         currentRobot.ingotMesh.enabled = true;
+        currentRobot.hookMesh.enabled = true;
+
+        // moving from middle top to first station input
         yield return currentRobot.MoveTo(pillarsObj.transform.position + new Vector3(0f, startHeight, 0f), connectedSockets[0].transform.position);
+
+
+
+        // animate the wobble
+        animator = stationObject.parent.GetComponent<Animator>();
+        if (animator != null){
+          animator.SetTrigger("PlayWobble");
+          Debug.LogWarning("Wobble wobble.");
+          yield return new WaitForSeconds(0.5f);
+        } else{Debug.LogWarning("Animator not found.");}
+
+
+
+
         // wait for Station Animation
         currentRobot.ingotMesh.enabled = false;
         currentRobot.bodyMesh.enabled = true;
+        currentRobot.bodyMesh.material = currentRobot.robotMaterialRaw;
+
+        // moving from first station ouput to second station input
         yield return currentRobot.MoveTo(connectedSockets[1].transform.position, connectedSockets[2].transform.position);
         // wait for Station Animation
-        currentRobot.bodyMesh.material = currentRobot.materialLookup[row3Column];
+        currentRobot.bodyMesh.material = currentRobot.robotMaterialPainted;
+        // moving from second station output to third station input
         yield return currentRobot.MoveTo(connectedSockets[3].transform.position, connectedSockets[4].transform.position);
         // wait for Station Animation
-        currentRobot.itemRendererLookup[row4Column].enabled = true;
+        currentRobot.itemMesh.enabled = true;
+        // robot jumps out of third station
+        currentRobot.hookMesh.enabled = false;
         soundManager.audioSourceSuccess.Play();
         yield return currentRobot.MoveTo(connectedSockets[4].transform.position, connectedSockets[4].transform.position + new Vector3(0f, 0.2f, 0f)); // maybe replace with jump animation
 
@@ -198,12 +249,10 @@ public class FXManager : MonoBehaviour
             robots[robotId].ingotMesh.enabled = false;
             robots[robotId].bodyMesh.enabled = false;
             robots[robotId].bodyMesh.material = robots[robotId].ingotMaterial;
-            for (int itemId = 0; itemId < robots[robotId].itemRendererLookup.Length; itemId++)
-            {
-                robots[robotId].itemRendererLookup[itemId].enabled = false;
-            }
+            robots[robotId].itemMesh.enabled = false;
+
         }
-    } 
+    }
 
 
 }

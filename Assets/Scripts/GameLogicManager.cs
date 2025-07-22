@@ -25,10 +25,10 @@ public class GameLogicManager : MonoBehaviour
 
     // TODO: initialise robot masks with correct connections
     int[,] maskRobot1 = new int[,]{
-            {-1,  1, -1, -1, -1},
-            {-1,  1, -1, -1, -1},
-            {-1, -1, -1,  1, -1},
-            {-1, -1, -1,  1, -1},
+            {-1, -1,  1, -1, -1},
+            {-1, -1,  1, -1, -1},
+            {-1, -1, -1, -1,  1},
+            {-1, -1, -1, -1,  1},
             { 1, -1, -1, -1, -1},
         };
     int[,] maskRobot2 = new int[,]{
@@ -122,7 +122,7 @@ public class GameLogicManager : MonoBehaviour
     void Update()
     {
         currentButtonState = nodeMCUManager.buttonState;
-        currentValues = nodeMCUManager.statesArray;
+        //currentValues = nodeMCUManager.statesArray;
 
 
 
@@ -217,7 +217,7 @@ public class GameLogicManager : MonoBehaviour
         {
             if (gameIsFinished)
             {
-                // TODO: change for end game 
+                // TODO: change for end game
                 fxManager.ResetRobots();
                 gameIsFinished = false;
             }

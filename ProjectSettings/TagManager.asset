@@ -7,6 +7,11 @@ TagManager:
   - Station
   - Pillar
   - Socket
+  - Visual
+  - Item
+  - Robot
+  - Ore
+  - Postbot
   layers:
   - Default
   - TransparentFX
