@@ -7,6 +7,8 @@ using System;
 public class FXManager : MonoBehaviour
 {
     public GameLogicManager gameLogicManager;
+    public SoundManager soundManager;
+
     public GameObject pillarsObj;
     GameObject[] pillars;
     GameObject[,] stations = new GameObject[3, 5];
@@ -27,7 +29,7 @@ public class FXManager : MonoBehaviour
     Transform stationObject;
 
     [SerializeField]
-    float startHeight = 2.2f;
+    float startHeight = 2.08f;
 
     void Start()
     {
@@ -98,13 +100,18 @@ public class FXManager : MonoBehaviour
         // Debug.Log("Wire has been disconnected at: " + disconnectedRow + " , " + disconnectedColumn);
         Vector3 endPosition = sockets[otherRow, otherColumn].transform.position;
         Vector3 startPosition = sockets[disconnectedRow, disconnectedColumn].transform.position;
+        
         if (id < 3) // wire 1
         {
-            line1.DisconnectLine(startPosition, endPosition);
+            // line1.DisconnectLine(startPosition, endPosition);
+            line1.DisconnectLine();
+
         }
         else // wire 2
         {
-            line2.DisconnectLine(startPosition, endPosition);
+            line2.DisconnectLine();
+            // line2.DisconnectLine(startPosition, endPosition);
+
         }
     }
 
@@ -112,30 +119,34 @@ public class FXManager : MonoBehaviour
     {
 
         // Debug.Log("Wire has been connected to: " + connectedRow + " , " + connectedColumn);
-        Vector3 endPosition = sockets[otherRow, otherColumn].transform.position;
-        Vector3 startPosition = sockets[connectedRow, connectedColumn].transform.position;
+        // Vector3 endPosition = sockets[otherRow, otherColumn].transform.position;
+        // Vector3 startPosition = sockets[connectedRow, connectedColumn].transform.position;
+        GameObject endSocket = sockets[otherRow, otherColumn];
+        GameObject startSocket = sockets[connectedRow, connectedColumn];
         if (id < 3) // wire 1
         {
-            line1.ConnectLine(startPosition, endPosition);
+            line1.ConnectLine(startSocket, endSocket);
         }
         else // wire 2
         {
-            line2.ConnectLine(startPosition, endPosition);
+            line2.ConnectLine(startSocket, endSocket);
         }
     }
 
-    public void disconnectStartWire(int disconnectedColumn)
+    public void disconnectStartWire(int disconnectedRow, int disconnectedColumn)
     {
         Vector3 startWireEndPosition = pillarsObj.transform.position + new Vector3(0f, startHeight, 0f);
         Vector3 startWireStartPosition = sockets[0, disconnectedColumn].transform.position;
-        lineStart.DisconnectLine(startWireStartPosition, startWireEndPosition);
+        // lineStart.DisconnectLine(startWireStartPosition, startWireEndPosition);
+        lineStart.DisconnectLine();
     }
 
-    public void connectStartWire(int connectedColumn)
+    public void connectStartWire(int connectedRow, int connectedColumn)
     {
         Vector3 startWireEndPosition = pillarsObj.transform.position + new Vector3(0f, startHeight, 0f);
         Vector3 startWireStartPosition = sockets[0, connectedColumn].transform.position;
-        lineStart.ConnectLine(startWireStartPosition, startWireEndPosition);
+        // lineStart.ConnectLine(startWireStartPosition, startWireEndPosition);
+        lineStart.ConnectLine(sockets[connectedRow, connectedColumn]);
     }
 
     public IEnumerator runBuildSequence()
@@ -215,8 +226,8 @@ public class FXManager : MonoBehaviour
         currentRobot.itemMesh.enabled = true;
         // robot jumps out of third station
         currentRobot.hookMesh.enabled = false;
+        soundManager.audioSourceSuccess.Play();
         yield return currentRobot.MoveTo(connectedSockets[4].transform.position, connectedSockets[4].transform.position + new Vector3(0f, 0.2f, 0f)); // maybe replace with jump animation
-
 
         gameLogicManager.isBuilding = false;
         if (gameLogicManager.robotCount < 1) // TODO: change back to 2 after test

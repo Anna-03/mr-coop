@@ -50,6 +50,8 @@ public class GameLogicManager : MonoBehaviour
     public NodeMCUManagerThread nodeMCUManager;
     public FXManager fxManager;
     public RobotManager robotManager;
+    public SoundManager soundManager;
+    AudioSource audioSourceClick;
 
     public int robotCount = 0;
     public bool isBuilding = false;
@@ -83,6 +85,9 @@ public class GameLogicManager : MonoBehaviour
         unorderedSockets = GameObject.FindGameObjectsWithTag("Socket");
         socketsFlat = unorderedSockets.OrderBy(so => so.name).ToArray();
 
+        audioSourceClick = soundManager.audioSourceClick;
+
+
         for (int column = 0; column < 5; column++)
         {
             for (int row = 0; row < 5; row++)
@@ -103,13 +108,13 @@ public class GameLogicManager : MonoBehaviour
 
         currentValues = nodeMCUManager.statesArray;
         // TEST
-        // currentValues = new int[,]{
-        //     {-1, -1, -1, -1, -1},
-        //     {-1, -1, -1, -1, -1},
-        //     {-1, -1, -1, -1, -1},
-        //     {-1, -1, -1, -1, -1},
-        //     {-1, -1, -1, -1, -1},
-        // };
+        currentValues = new int[,]{
+             {-1, -1, -1, -1, -1},
+             {-1, -1, -1, -1, -1},
+             {-1, -1, -1, -1, -1},
+             {-1, -1, -1, -1, -1},
+             {-1, -1, -1, -1, -1},
+         };
         currentButtonState = nodeMCUManager.buttonState;
     }
 
@@ -159,10 +164,10 @@ public class GameLogicManager : MonoBehaviour
         if (Keyboard.current.digit1Key.wasPressedThisFrame || OVRInput.GetDown(OVRInput.Button.One))
         {
             currentValues = new int[,]{
-            {-1, -1,  0, -1, -1},
-            {-1, -1,  2, -1, -1},
-            {-1, -1, -1, -1,  1},
-            {-1, -1, -1, -1,  4},
+            {-1,  0, -1, -1, -1},
+            {-1,  2, -1, -1, -1},
+            {-1, -1, -1,  1, -1},
+            {-1, -1, -1,  4, -1},
             { 3, -1, -1, -1, -1},
             };
 
@@ -208,7 +213,7 @@ public class GameLogicManager : MonoBehaviour
             currentButtonState = true;
         }
         // END TESTING
-        if (currentButtonState && !previousButtonState )
+        if (currentButtonState && !previousButtonState)
         {
             if (gameIsFinished)
             {
@@ -234,7 +239,7 @@ public class GameLogicManager : MonoBehaviour
         {
             case 0:
                 wireStart.connectedColumn = -1;
-                fxManager.disconnectStartWire(disconnectedColumn);
+                fxManager.disconnectStartWire(disconnectedRow, disconnectedColumn);
 
                 break;
             case 1:
@@ -280,7 +285,7 @@ public class GameLogicManager : MonoBehaviour
         {
             case 0:
                 wireStart.connectedColumn = connectedColumn;
-                fxManager.connectStartWire(connectedColumn);
+                fxManager.connectStartWire(connectedRow, connectedColumn);
 
                 break;
             case 1:
@@ -317,6 +322,7 @@ public class GameLogicManager : MonoBehaviour
                 break;
         }
         fxManager.changeSocketState(connectedRow, connectedColumn, 1);
+        audioSourceClick.PlayOneShot(soundManager.click);
     }
 
     bool validateConnections()
@@ -449,6 +455,14 @@ public class GameLogicManager : MonoBehaviour
         Debug.Log("all wires valid:: ");
         Debug.Log(allWiresValid);
 
+        if (allWiresValid)
+        {
+            soundManager.PlayVoice("correct");
+        }
+        else
+        {
+            soundManager.PlayVoice("incorrect");
+        }
         return allWiresValid;
 
     }
