@@ -51,7 +51,7 @@ public class GameLogicManager : MonoBehaviour
     public FXManager fxManager;
     public RobotManager robotManager;
     public SoundManager soundManager;
-    AudioSource audioSource;
+    AudioSource audioSourceClick;
 
     public int robotCount = 0;
     public bool isBuilding = false;
@@ -85,7 +85,8 @@ public class GameLogicManager : MonoBehaviour
         unorderedSockets = GameObject.FindGameObjectsWithTag("Socket");
         socketsFlat = unorderedSockets.OrderBy(so => so.name).ToArray();
 
-        audioSource = soundManager.audioSource;
+        audioSourceClick = soundManager.audioSourceClick;
+
 
         for (int column = 0; column < 5; column++)
         {
@@ -120,8 +121,8 @@ public class GameLogicManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //currentButtonState = nodeMCUManager.buttonState;
-        //currentValues = nodeMCUManager.statesArray;
+        currentButtonState = nodeMCUManager.buttonState;
+        currentValues = nodeMCUManager.statesArray;
 
 
 
@@ -212,7 +213,7 @@ public class GameLogicManager : MonoBehaviour
             currentButtonState = true;
         }
         // END TESTING
-        if (currentButtonState && !previousButtonState )
+        if (currentButtonState && !previousButtonState)
         {
             if (gameIsFinished)
             {
@@ -321,7 +322,7 @@ public class GameLogicManager : MonoBehaviour
                 break;
         }
         fxManager.changeSocketState(connectedRow, connectedColumn, 1);
-        audioSource.PlayOneShot(soundManager.click);
+        audioSourceClick.PlayOneShot(soundManager.click);
     }
 
     bool validateConnections()
@@ -453,18 +454,16 @@ public class GameLogicManager : MonoBehaviour
 
         Debug.Log("all wires valid:: ");
         Debug.Log(allWiresValid);
+
         if (allWiresValid)
         {
-            audioSource.PlayOneShot(soundManager.correct_match);
+            soundManager.PlayVoice("correct");
         }
         else
         {
-            {
-                audioSource.PlayOneShot(soundManager.incorrect_match);
-            }
+            soundManager.PlayVoice("incorrect");
         }
-
-            return allWiresValid;
+        return allWiresValid;
 
     }
 }
