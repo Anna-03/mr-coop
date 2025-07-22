@@ -12,6 +12,7 @@ public class LineManager : MonoBehaviour
     float progress;
     GameObject currentStartSocket;
     GameObject currentEndSocket;
+    public GameObject volumetricLine;
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -20,21 +21,42 @@ public class LineManager : MonoBehaviour
 
     void Update()
     {
+
         if (currentStartSocket != null && currentEndSocket != null)
         {
             progress = animator.GetFloat("progress");
-            lineRenderer.SetPosition(0, currentStartSocket.transform.position);
-            lineRenderer.SetPosition(1, Vector3.Lerp(currentStartSocket.transform.position, currentEndSocket.transform.position, progress));
+            // lineRenderer.SetPosition(0, currentStartSocket.transform.position);
+            // lineRenderer.SetPosition(1, Vector3.Lerp(currentStartSocket.transform.position, currentEndSocket.transform.position, progress));
+            updateLineMesh(currentEndSocket.transform.position, currentStartSocket.transform.position);
+
+
         }
         if (currentStartSocket == null && currentEndSocket != null)
         {
             Vector3 startWireEndSocketPosition = currentEndSocket.transform.parent.parent.parent.position + new Vector3(0f, 2.08f, 0f);
             progress = animator.GetFloat("progress");
-            lineRenderer.SetPosition(0, currentEndSocket.transform.position);
-            lineRenderer.SetPosition(1, Vector3.Lerp(currentEndSocket.transform.position, startWireEndSocketPosition, progress));
+            // lineRenderer.SetPosition(0, currentEndSocket.transform.position);
+            // lineRenderer.SetPosition(1, Vector3.Lerp(currentEndSocket.transform.position, startWireEndSocketPosition, progress));
+            updateLineMesh(startWireEndSocketPosition, currentEndSocket.transform.position);
         }
     }
 
+    void updateLineMesh(Vector3 startPos, Vector3 endPos)
+    {
+        if (volumetricLine != null)
+        {
+            float dist = Vector3.Distance(startPos, endPos) * 0.5f; // original cylinder mesh is 2 units high -> 0.5 normalizes to 1 unit 
+
+            transform.position = startPos;
+            transform.LookAt(endPos);
+            Vector3 scale = transform.localScale;
+            scale.z = Mathf.Lerp(0f, dist, progress);
+
+
+            transform.localScale = scale;
+
+        }
+    }
     // public void ConnectLine(Vector3 startPos, Vector3 endPos)
     // {
     //     AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);

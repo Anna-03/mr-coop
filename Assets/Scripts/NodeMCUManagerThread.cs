@@ -142,7 +142,7 @@ public class NodeMCUManagerThread : MonoBehaviour
             //     statesArray[3, column] = states[3];
             // }
         }
-        Debug.Log("messages count: " + states[1]);
+        // Debug.Log("messages count: " + states[1]);
 
     }
 
@@ -159,10 +159,10 @@ public class NodeMCUManagerThread : MonoBehaviour
                 rowValues[col] = statesArray[row, col].ToString();
             }
 
-            Debug.Log(string.Join(", ", rowValues));
+            // Debug.Log(string.Join(", ", rowValues));
         }
 
-        Debug.Log("");
+        // Debug.Log("");
     }
 
     int[] BytesToIntArray(byte[] bytes)
