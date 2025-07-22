@@ -182,6 +182,7 @@ public class FXManager : MonoBehaviour
         }
 
         currentRobot.ingotMesh.enabled = true;
+        currentRobot.hookMesh.enabled = true;
 
         // moving from middle top to first station input
         yield return currentRobot.MoveTo(pillarsObj.transform.position + new Vector3(0f, startHeight, 0f), connectedSockets[0].transform.position);
@@ -213,6 +214,7 @@ public class FXManager : MonoBehaviour
         // wait for Station Animation
         currentRobot.itemMesh.enabled = true;
         // robot jumps out of third station
+        currentRobot.hookMesh.enabled = false;
         yield return currentRobot.MoveTo(connectedSockets[4].transform.position, connectedSockets[4].transform.position + new Vector3(0f, 0.2f, 0f)); // maybe replace with jump animation
 
 

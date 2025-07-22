@@ -6,10 +6,13 @@ using UnityEngine;
 
 public class RobotManager : MonoBehaviour
 {
+    public GameObject hook;
+
     public GameObject ingot;
     public GameObject body;
     public GameObject item;
 
+    public MeshRenderer hookMesh;
     public MeshRenderer ingotMesh;
     public SkinnedMeshRenderer bodyMesh;
 
@@ -35,9 +38,9 @@ public class RobotManager : MonoBehaviour
         ingotMesh = ingot.GetComponent<MeshRenderer>();
         bodyMesh = body.GetComponent<SkinnedMeshRenderer>();
         itemMesh = item.GetComponent<SkinnedMeshRenderer>();
+        hookMesh = hook.GetComponent<MeshRenderer>();
 
         animator = GetComponent<Animator>();
-
 
     }
 
