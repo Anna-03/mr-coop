@@ -54,8 +54,16 @@ public class LineManager : MonoBehaviour
 
 
             transform.localScale = scale;
-
+            if (volumetricLine.GetComponent<MeshRenderer>().enabled == true && progress < 0.01)
+            {
+                volumetricLine.GetComponent<MeshRenderer>().enabled = false;
+            }
+            if (volumetricLine.GetComponent<MeshRenderer>().enabled == false && progress > 0.01)
+            {
+                volumetricLine.GetComponent<MeshRenderer>().enabled = true;
+            }
         }
+
     }
     // public void ConnectLine(Vector3 startPos, Vector3 endPos)
     // {

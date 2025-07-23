@@ -56,7 +56,10 @@ public class NodeMCUManagerThread : MonoBehaviour
         {
             UpdateStatesArray(states);
             PrintStatesArray();
-            // Debug.Log("Received states: " + string.Join(", ", states));
+            if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
+            {
+                Debug.Log("Received states: " + string.Join(", ", states));
+            }
             // Debug.Log($"Total messages received: {numMessages}");
             // Update your statesArray here or do other UI updates
         }
