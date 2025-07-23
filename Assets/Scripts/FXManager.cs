@@ -54,6 +54,8 @@ public class FXManager : MonoBehaviour
     public void changeSocketState(int row, int column, int state)
     {
         GameObject socket = sockets[row, column];
+        Transform indicator = socket.transform.Find("PulsatingIndicator");
+        MeshRenderer indicatorRenderer = indicator.GetComponent<MeshRenderer>();
         Renderer renderer = socket.GetComponent<Renderer>();
         Color color = Color.gray;
         Material lampMat = lightOff;
@@ -86,6 +88,7 @@ public class FXManager : MonoBehaviour
         {
             case 0:
                 color = Color.gray;
+                indicatorRenderer.enabled = true;
                 // lampMat = lightOff;
                 if (row == 4)
                 {
@@ -103,6 +106,7 @@ public class FXManager : MonoBehaviour
 
             case 1:
                 color = Color.white;
+                indicatorRenderer.enabled = false;
                 if (row == 4)
                 {
                     lampMat = lightOn;
@@ -117,10 +121,12 @@ public class FXManager : MonoBehaviour
                 }
                 break;
             case 2:
+                indicatorRenderer.enabled = false;
                 color = Color.green;
                 lampMat = lightGreen;
                 break;
             case 3:
+                indicatorRenderer.enabled = false;
                 color = Color.red;
                 lampMat = lightRed;
                 break;
