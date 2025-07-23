@@ -122,10 +122,13 @@ public class MovePillarsWithRightJoystick : MonoBehaviour
 
         // Match X and Z position, keep this object's Y position
         Vector3 newPosition = new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
-        transform.position = newPosition;
+        Vector3 forwardXY = cameraTransform.forward;
+        forwardXY.y = 0;
+        forwardXY.Normalize();
+        transform.position = newPosition+forwardXY*2;
 
         // Match Y-axis (yaw) rotation, ignore pitch and roll
-        float cameraYaw = cameraTransform.eulerAngles.y;
+        float cameraYaw = cameraTransform.eulerAngles.y+180;
         transform.rotation = Quaternion.Euler(0, cameraYaw, 0);
     }
 }
