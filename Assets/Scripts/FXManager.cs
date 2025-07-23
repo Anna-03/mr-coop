@@ -10,6 +10,7 @@ public class FXManager : MonoBehaviour
     public SoundManager soundManager;
 
     public GameObject pillarsObj;
+    public GameObject tractorBeam;
     GameObject[] pillars;
     GameObject[,] stations = new GameObject[3, 5];
     GameObject[,] sockets = new GameObject[5, 5];
@@ -252,41 +253,75 @@ public class FXManager : MonoBehaviour
         currentRobot.ingotMesh.enabled = true;
         currentRobot.hookMesh.enabled = true;
 
+        Transform currentOutput;
+        Transform currentInput;
+        Vector3 currentStartPosition = new Vector3(0, 0, 0);
+        //FIRST STATION
+
         // moving from middle top to first station input
-        yield return currentRobot.MoveTo(pillarsObj.transform.position + new Vector3(0f, startHeight, 0f), connectedSockets[0].transform.position);
+        yield return currentRobot.MoveTo(pillarsObj.transform.position + new Vector3(0f, startHeight, 0f), connectedSockets[0].transform.position, 0.85f);
 
+        currentInput = connectedSockets[0].transform.parent.Find("visual/Input");
+        currentOutput = connectedSockets[0].transform.parent.Find("visual/Output");
 
-
-        // animate the wobble
-        animator = stationObject.parent.GetComponent<Animator>();
-        if (animator != null)
-        {
-            animator.SetTrigger("PlayWobble");
-            Debug.LogWarning("Wobble wobble.");
-            yield return new WaitForSeconds(0.5f);
-        }
-        else { Debug.LogWarning("Animator not found."); }
-
-
-
+        // move in station 
+        yield return currentRobot.MoveAndScaleTo(currentRobot.transform.position, currentInput.position, 1f, 0f);
 
         // wait for Station Animation
+        yield return playWobbleAnimation(connectedSockets[1]);
         currentRobot.ingotMesh.enabled = false;
         currentRobot.bodyMesh.enabled = true;
         currentRobot.bodyMesh.material = currentRobot.robotMaterialRaw;
 
+        //SECOND STATION
+
+        // move out of station
+        currentStartPosition = connectedSockets[1].transform.position + (connectedSockets[2].transform.position - connectedSockets[1].transform.position).normalized * 0.2f;
+        yield return currentRobot.MoveAndScaleTo(currentOutput.position, currentStartPosition, 0f, 1f);
+
         // moving from first station ouput to second station input
-        yield return currentRobot.MoveTo(connectedSockets[1].transform.position, connectedSockets[2].transform.position);
+        yield return currentRobot.MoveTo(currentStartPosition, connectedSockets[2].transform.position, 0.85f);
+
+        // move in station 
+        currentInput = connectedSockets[3].transform.parent.Find("visual/Input");
+        currentOutput = connectedSockets[3].transform.parent.Find("visual/Output");
+        yield return currentRobot.MoveAndScaleTo(currentRobot.transform.position, currentInput.position, 1f, 0f);
+
         // wait for Station Animation
+        yield return playWobbleAnimation(connectedSockets[3]);
         currentRobot.bodyMesh.material = currentRobot.robotMaterialPainted;
+
+        //THIRD STATION
+
+        // move out of station
+        currentStartPosition = connectedSockets[3].transform.position + (connectedSockets[4].transform.position - connectedSockets[3].transform.position).normalized * 0.2f;
+        yield return currentRobot.MoveAndScaleTo(currentOutput.position, currentStartPosition, 0f, 1f);
+
         // moving from second station output to third station input
-        yield return currentRobot.MoveTo(connectedSockets[3].transform.position, connectedSockets[4].transform.position);
+        yield return currentRobot.MoveTo(currentStartPosition, connectedSockets[4].transform.position, 0.85f);
+
+        // move in station 
+        currentInput = connectedSockets[4].transform.parent.Find("visual/Input");
+        yield return currentRobot.MoveAndScaleTo(currentRobot.transform.position, currentInput.position, 1f, 0f);
+
         // wait for Station Animation
+        yield return playWobbleAnimation(connectedSockets[4]);
         currentRobot.itemMesh.enabled = true;
-        // robot jumps out of third station
         currentRobot.hookMesh.enabled = false;
+
+        // robot jumps out of third station
         soundManager.audioSourceSuccess.Play();
-        yield return currentRobot.MoveTo(connectedSockets[4].transform.position, connectedSockets[4].transform.position + new Vector3(0f, 0.3f, 0f)); // maybe replace with jump animation
+        //yield return currentRobot.MoveAndScaleTo(connectedSockets[4].transform.position, currentInput.position + new Vector3(0f, 0.7f, 0f), 0f, 1.5f); // maybe replace with jump animation
+        currentOutput = connectedSockets[4].transform.parent.Find("visual/Output");
+        Vector3 newRobotPosition = currentOutput.position;
+        newRobotPosition.y += 0.3f;
+        currentRobot.transform.position = newRobotPosition;
+        currentRobot.transform.localScale = new Vector3(1, 1, 1);
+        currentRobot.transform.rotation = currentOutput.transform.rotation;
+
+        Animator currentBodyAnimator = currentRobot.transform.Find("body").GetComponent<Animator>();
+        currentBodyAnimator.SetTrigger("PlayJump");
+
 
         gameLogicManager.isBuilding = false;
         if (gameLogicManager.robotCount < 2) // TODO: change back to 2 after test
@@ -300,6 +335,23 @@ public class FXManager : MonoBehaviour
             //trigger end scene
         }
 
+    }
+    public IEnumerator playWobbleAnimation(GameObject connectedSocket)
+    {
+        Animator currentStationAnimator = connectedSocket.transform.parent.Find("visual").GetComponent<Animator>();
+        if (currentStationAnimator != null)
+        {
+            currentStationAnimator.SetTrigger("PlayWobble");
+            Debug.LogWarning("Wobble wobble.");
+            yield return new WaitForSeconds(2.0f);
+            currentStationAnimator.SetTrigger("StopWobble");
+            yield return new WaitForSeconds(0.5f);
+        }
+        else
+        {
+            Debug.LogWarning("Animator not found.");
+            yield return new WaitForSeconds(1.0f);
+        }
     }
     public void ResetRobots()
     {

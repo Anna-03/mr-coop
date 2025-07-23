@@ -13,6 +13,9 @@ public class LineManager : MonoBehaviour
     GameObject currentStartSocket;
     GameObject currentEndSocket;
     public GameObject volumetricLine;
+    public GameLogicManager gameLogicManager;
+
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -37,7 +40,8 @@ public class LineManager : MonoBehaviour
             progress = animator.GetFloat("progress");
             // lineRenderer.SetPosition(0, currentEndSocket.transform.position);
             // lineRenderer.SetPosition(1, Vector3.Lerp(currentEndSocket.transform.position, startWireEndSocketPosition, progress));
-            updateLineMesh(startWireEndSocketPosition, currentEndSocket.transform.position);
+            updateLineMesh(gameLogicManager.startPosition, currentEndSocket.transform.position);
+            // updateLineMesh(startWireEndSocketPosition, currentEndSocket.transform.position);
         }
     }
 

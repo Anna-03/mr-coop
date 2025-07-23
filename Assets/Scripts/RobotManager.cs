@@ -54,7 +54,7 @@ public class RobotManager : MonoBehaviour
     {
         isAnimationDone = true;
     }
-    public IEnumerator MoveTo(Vector3 startPosition, Vector3 endPosition)
+    public IEnumerator MoveTo(Vector3 startPosition, Vector3 endPosition, float maxPercent)
     {
         // Start the animation from the beginning
         animator.Play("RobotEaseToOne", 0, 0f);
@@ -64,7 +64,7 @@ public class RobotManager : MonoBehaviour
         while (!isAnimationDone)
         {
             float progress = animator.GetFloat("progress");
-            transform.position = Vector3.Lerp(startPosition, endPosition, progress);
+            transform.position = Vector3.Lerp(startPosition, endPosition, progress * maxPercent);
             Vector3 lookAtPositionFlat = endPosition;
             lookAtPositionFlat.y = transform.position.y;
             transform.LookAt(lookAtPositionFlat);
@@ -72,11 +72,67 @@ public class RobotManager : MonoBehaviour
         }
 
         // Ensure final position is exact
-        transform.position = endPosition;
+        // transform.position = endPosition;
 
         // Reset the flag so it's ready for next time
         isAnimationDone = false;
         Debug.Log("Robot moving done!");
 
     }
+    public IEnumerator MoveAndScaleTo(Vector3 startPosition, Vector3 endPosition, float startScale, float endScale)
+    {
+        // Start the animation from the beginning
+        animator.Play("RobotEaseToOneFast", 0, 0f);
+        // Wait one frame so Animator updates
+        yield return null;
+        float scale;
+        // Keep updating position while the animation is running
+        while (!isAnimationDone)
+        {
+
+            float progress = animator.GetFloat("progress");
+            scale = Mathf.Lerp(startScale, endScale, progress);
+
+            transform.position = Vector3.Lerp(startPosition, endPosition, progress);
+            transform.localScale = new Vector3(scale, scale, scale);
+            Vector3 lookAtPositionFlat = endPosition;
+
+            lookAtPositionFlat.y = transform.position.y;
+            transform.LookAt(lookAtPositionFlat);
+            yield return null; // Wait for next frame
+        }
+
+        // Ensure final position is exact
+        // transform.position = endPosition;
+
+        // Reset the flag so it's ready for next time
+        isAnimationDone = false;
+        Debug.Log("Robot moving done!");
+
+    }
+    // public IEnumerator MoveTo(Vector3 startPosition, Vector3 endPosition)
+    // {
+    //     // Start the animation from the beginning
+    //     animator.Play("RobotEaseToOne", 0, 0f);
+    //     // Wait one frame so Animator updates
+    //     yield return null;
+    //     // Keep updating position while the animation is running
+    //     while (!isAnimationDone)
+    //     {
+    //         float progress = animator.GetFloat("progress");
+    //         transform.position = Vector3.Lerp(startPosition, endPosition, progress);
+    //         Vector3 lookAtPositionFlat = endPosition;
+    //         lookAtPositionFlat.y = transform.position.y;
+    //         transform.LookAt(lookAtPositionFlat);
+    //         yield return null; // Wait for next frame
+    //     }
+
+    //     // Ensure final position is exact
+    //     transform.position = endPosition;
+
+    //     // Reset the flag so it's ready for next time
+    //     isAnimationDone = false;
+    //     Debug.Log("Robot moving done!");
+
+    // }
 }

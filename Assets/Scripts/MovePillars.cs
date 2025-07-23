@@ -13,8 +13,13 @@ public class MovePillarsWithRightJoystick : MonoBehaviour
     bool anchorInitialized = false;
     float delaySeconds = 1f;
     string rootName = "PillarsRoot";
+    Vector3 offsetPos = new Vector3(0, 0, 0);
+
     void Start()
     {
+
+
+
         placePillars();
         if (OVRManager.isHmdPresent && !Application.isEditor)
         {
@@ -52,10 +57,19 @@ public class MovePillarsWithRightJoystick : MonoBehaviour
         Vector2 inputLeft = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
 
         // if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger))
+
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger))
+        {
+            Transform cameraTransform = Camera.main.transform;
+            Vector3 cameraXY = new Vector3(cameraTransform.position.x, 0, cameraTransform.position.z);
+            Vector3 selfXY = new Vector3(transform.position.x, 0, transform.position.z);
+            offsetPos = cameraXY - selfXY;
+        }
         if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger))
         {
             AlignToHeadset();
         }
+
 
         if (inputRight.magnitude > 0.1f)
         {
@@ -90,6 +104,7 @@ public class MovePillarsWithRightJoystick : MonoBehaviour
         }
 
     }
+
     void placePillars()
     {
         int childCount = transform.childCount;
@@ -117,20 +132,19 @@ public class MovePillarsWithRightJoystick : MonoBehaviour
     }
     void AlignToHeadset()
     {
-        // Get headset (main camera) transform
         Transform cameraTransform = Camera.main.transform;
+        Vector3 cameraXY = new Vector3(cameraTransform.position.x, 0, cameraTransform.position.z);
+        Vector3 selfXY = new Vector3(transform.position.x, 0, transform.position.z);
 
-        // Match X and Z position, keep this object's Y position
-        Vector3 newPosition = new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
-        Vector3 forwardXY = cameraTransform.forward;
-        forwardXY.y = 0;
-        forwardXY.Normalize();
-        transform.position = newPosition+forwardXY*2;
+        transform.position = cameraXY - offsetPos;
 
         // Match Y-axis (yaw) rotation, ignore pitch and roll
-        float cameraYaw = cameraTransform.eulerAngles.y+180;
-        transform.rotation = Quaternion.Euler(0, cameraYaw, 0);
+        float cameraYaw = cameraTransform.eulerAngles.y;
+        // transform.rotation = Quaternion.Euler(0, cameraYaw, 0);
+        // Get headset transform
+
     }
+
 }
 
 // using System.Collections;

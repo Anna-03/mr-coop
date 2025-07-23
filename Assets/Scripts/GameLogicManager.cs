@@ -60,12 +60,17 @@ public class GameLogicManager : MonoBehaviour
     bool previousButtonState = false;
     public bool gameIsFinished = false;
 
+    public Vector3 startPosition = new Vector3(0,0,0);
+    public Vector3 startPositionOffet = new Vector3(0.4f,2.08f,0.2f);
+
+
 
     public WireStart wireStart = new WireStart();
     public Wire wire1 = new Wire();
     public Wire wire2 = new Wire();
     public bool allWiresValid = false;
 
+    public GameObject pillarsObj;
     public GameObject[] pillars;
     public GameObject[] unorderedPillars;
     public GameObject[] stationsFlat;
@@ -121,6 +126,7 @@ public class GameLogicManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        startPosition = pillarsObj.transform.position + startPositionOffet;
         currentButtonState = nodeMCUManager.buttonState;
         currentValues = nodeMCUManager.statesArray;
 
@@ -164,11 +170,11 @@ public class GameLogicManager : MonoBehaviour
         if (Keyboard.current.digit1Key.wasPressedThisFrame || OVRInput.GetDown(OVRInput.Button.One))
         {
             currentValues = new int[,]{
-            {-1,  0, -1, -1, -1},
-            {-1,  2, -1, -1, -1},
-            {-1, -1, -1,  1, -1},
-            {-1, -1, -1,  4, -1},
-            { 3, -1, -1, -1, -1},
+            {-1, -1,  0, -1, -1},
+            {-1, -1,  1, -1, -1},
+            {-1, -1, -1, -1,  2},
+            {-1, -1, -1, -1,  3},
+            { 4, -1, -1, -1, -1},
             };
 
         }

@@ -60,7 +60,7 @@ Shader "Custom/FadingLine"
 
                 fade = min(fadeTop, fadeBottom);
 
-                return fixed4(_Color.rgb, _Color.a * fade);
+                return fixed4(_Color.rgb, _Color.a * fade * 0.5);
             }
             ENDCG
         }
