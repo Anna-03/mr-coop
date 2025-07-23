@@ -65,6 +65,9 @@ public class RobotManager : MonoBehaviour
         {
             float progress = animator.GetFloat("progress");
             transform.position = Vector3.Lerp(startPosition, endPosition, progress);
+            Vector3 lookAtPositionFlat = endPosition;
+            lookAtPositionFlat.y = transform.position.y;
+            transform.LookAt(lookAtPositionFlat);
             yield return null; // Wait for next frame
         }
 
