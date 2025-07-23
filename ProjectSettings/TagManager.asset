@@ -12,6 +12,7 @@ TagManager:
   - Robot
   - Ore
   - Postbot
+  - PulsatingIndicator
   layers:
   - Default
   - TransparentFX
