@@ -10,7 +10,7 @@ public class FXManager : MonoBehaviour
     public SoundManager soundManager;
 
     public GameObject pillarsObj;
-    public GameObject tractorBeam;
+    public TractorBeamManager tractorBeam;
     GameObject[] pillars;
     GameObject[,] stations = new GameObject[3, 5];
     GameObject[,] sockets = new GameObject[5, 5];
@@ -156,8 +156,8 @@ public class FXManager : MonoBehaviour
     public void disconnectFullWire(int disconnectedRow, int disconnectedColumn, int otherRow, int otherColumn, int id)
     {
         // Debug.Log("Wire has been disconnected at: " + disconnectedRow + " , " + disconnectedColumn);
-        Vector3 endPosition = sockets[otherRow, otherColumn].transform.position;
-        Vector3 startPosition = sockets[disconnectedRow, disconnectedColumn].transform.position;
+        // Vector3 endPosition = sockets[otherRow, otherColumn].transform.position;
+        // Vector3 startPosition = sockets[disconnectedRow, disconnectedColumn].transform.position;
 
         if (id < 3) // wire 1
         {
@@ -256,6 +256,7 @@ public class FXManager : MonoBehaviour
         Transform currentOutput;
         Transform currentInput;
         Vector3 currentStartPosition = new Vector3(0, 0, 0);
+        Vector3 currentTractorBeamLookAtPosition = new Vector3(0, 0, 0);
         //FIRST STATION
 
         // moving from middle top to first station input
@@ -263,9 +264,11 @@ public class FXManager : MonoBehaviour
 
         currentInput = connectedSockets[0].transform.parent.Find("visual/Input");
         currentOutput = connectedSockets[0].transform.parent.Find("visual/Output");
-
+        currentTractorBeamLookAtPosition = currentRobot.transform.position;
+        yield return tractorBeam.PlaceAndScaleTo(currentInput.transform.position, 0, 1, currentTractorBeamLookAtPosition);
         // move in station 
         yield return currentRobot.MoveAndScaleTo(currentRobot.transform.position, currentInput.position, 1f, 0f);
+        yield return tractorBeam.PlaceAndScaleTo(currentInput.transform.position, 1, 0, currentTractorBeamLookAtPosition);
 
         // wait for Station Animation
         yield return playWobbleAnimation(connectedSockets[1]);
@@ -277,7 +280,10 @@ public class FXManager : MonoBehaviour
 
         // move out of station
         currentStartPosition = connectedSockets[1].transform.position + (connectedSockets[2].transform.position - connectedSockets[1].transform.position).normalized * 0.2f;
+        yield return tractorBeam.PlaceAndScaleTo(currentOutput.transform.position, 0, 1, currentStartPosition);
         yield return currentRobot.MoveAndScaleTo(currentOutput.position, currentStartPosition, 0f, 1f);
+        yield return tractorBeam.PlaceAndScaleTo(currentOutput.transform.position, 1, 0, currentStartPosition);
+
 
         // moving from first station ouput to second station input
         yield return currentRobot.MoveTo(currentStartPosition, connectedSockets[2].transform.position, 0.85f);
@@ -285,7 +291,10 @@ public class FXManager : MonoBehaviour
         // move in station 
         currentInput = connectedSockets[3].transform.parent.Find("visual/Input");
         currentOutput = connectedSockets[3].transform.parent.Find("visual/Output");
+        currentTractorBeamLookAtPosition = currentRobot.transform.position;
+        yield return tractorBeam.PlaceAndScaleTo(currentInput.transform.position, 0, 1, currentTractorBeamLookAtPosition);
         yield return currentRobot.MoveAndScaleTo(currentRobot.transform.position, currentInput.position, 1f, 0f);
+        yield return tractorBeam.PlaceAndScaleTo(currentInput.transform.position, 1, 0, currentTractorBeamLookAtPosition);
 
         // wait for Station Animation
         yield return playWobbleAnimation(connectedSockets[3]);
@@ -294,15 +303,22 @@ public class FXManager : MonoBehaviour
         //THIRD STATION
 
         // move out of station
+
         currentStartPosition = connectedSockets[3].transform.position + (connectedSockets[4].transform.position - connectedSockets[3].transform.position).normalized * 0.2f;
+        yield return tractorBeam.PlaceAndScaleTo(currentOutput.transform.position, 0, 1, currentStartPosition);
         yield return currentRobot.MoveAndScaleTo(currentOutput.position, currentStartPosition, 0f, 1f);
+        yield return tractorBeam.PlaceAndScaleTo(currentOutput.transform.position, 1, 0, currentStartPosition);
+
 
         // moving from second station output to third station input
         yield return currentRobot.MoveTo(currentStartPosition, connectedSockets[4].transform.position, 0.85f);
 
         // move in station 
         currentInput = connectedSockets[4].transform.parent.Find("visual/Input");
+        currentTractorBeamLookAtPosition = currentRobot.transform.position;
+        yield return tractorBeam.PlaceAndScaleTo(currentInput.transform.position, 0, 1, currentTractorBeamLookAtPosition);
         yield return currentRobot.MoveAndScaleTo(currentRobot.transform.position, currentInput.position, 1f, 0f);
+        yield return tractorBeam.PlaceAndScaleTo(currentInput.transform.position, 1, 0, currentTractorBeamLookAtPosition);
 
         // wait for Station Animation
         yield return playWobbleAnimation(connectedSockets[4]);
@@ -359,9 +375,7 @@ public class FXManager : MonoBehaviour
         {
             robots[robotId].ingotMesh.enabled = false;
             robots[robotId].bodyMesh.enabled = false;
-            robots[robotId].bodyMesh.material = robots[robotId].ingotMaterial;
             robots[robotId].itemMesh.enabled = false;
-
         }
     }
 

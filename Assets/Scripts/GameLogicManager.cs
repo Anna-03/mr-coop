@@ -127,8 +127,8 @@ public class GameLogicManager : MonoBehaviour
     void Update()
     {
         startPosition = pillarsObj.transform.position + startPositionOffet;
-        currentButtonState = nodeMCUManager.buttonState;
-        currentValues = nodeMCUManager.statesArray;
+        // currentButtonState = nodeMCUManager.buttonState;
+        // currentValues = nodeMCUManager.statesArray;
 
 
 
