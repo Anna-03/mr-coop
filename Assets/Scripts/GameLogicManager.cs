@@ -38,13 +38,13 @@ public class GameLogicManager : MonoBehaviour
             {-1,  1, -1, -1, -1},
             {-1, -1, -1, -1,  1},
         };
-    // int[,] maskRobot3 = new int[,]{
-    //         {-1,  1, -1, -1, -1},
-    //         {-1,  1, -1, -1, -1},
-    //         {-1, -1, -1,  1, -1},
-    //         {-1, -1, -1,  1, -1},
-    //         { 1, -1, -1, -1, -1},
-    //     };
+    int[,] maskRobot3 = new int[,]{
+            { 1, -1, -1, -1, -1},
+            { 1, -1, -1, -1, -1},
+            {-1, -1,  1, -1, -1},
+            {-1, -1,  1, -1, -1},
+            {-1, -1,  1, -1, -1},
+        };
 
 
     public NodeMCUManagerThread nodeMCUManager;
@@ -122,7 +122,7 @@ public class GameLogicManager : MonoBehaviour
     void Update()
     {
         currentButtonState = nodeMCUManager.buttonState;
-        //currentValues = nodeMCUManager.statesArray;
+        currentValues = nodeMCUManager.statesArray;
 
 
 
@@ -336,9 +336,9 @@ public class GameLogicManager : MonoBehaviour
             case 1:
                 currentMask = maskRobot2;
                 break;
-            // case 2:
-            //     currentMask = maskRobot3;
-            //     break;
+            case 2:
+                currentMask = maskRobot3;
+                break;
             default:
                 currentMask = maskRobot1;
                 break;

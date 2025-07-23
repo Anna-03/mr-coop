@@ -82,15 +82,13 @@ public class FXManager : MonoBehaviour
             Material mat = renderer.material;
             mat.color = color;
             stationObject = socket.transform.parent.Find("visual/Station");
-            if (stationObject != null){
-              Renderer rend = stationObject.GetComponent<Renderer>();
-              if (rend != null){
-                // 0 is main body, 1 is display, 2 is lamps
-                rend.materials[0] = lampMat;
-                rend.materials[1] = lampMat;
-                rend.materials[2] = lampMat;
-              } else{Debug.LogWarning("Renderer not found on stationObject.");}
-            } else{Debug.LogWarning("Could not find child path: visual/Station");}
+            if (stationObject != null)
+            {
+                Material[] newLampMaterial = stationObject.GetComponent<SkinnedMeshRenderer>().materials;
+                newLampMaterial[2] = lampMat;
+                stationObject.GetComponent<SkinnedMeshRenderer>().materials = newLampMaterial;
+            }
+            else { Debug.LogWarning("Could not find child path: visual/Station"); }
         }
 
     }
@@ -160,9 +158,9 @@ public class FXManager : MonoBehaviour
             case 1:
                 currentRobot = robots[0];
                 break;
-            // case 2:
-            //     currentRobot = robots[2];
-            //     break;
+            case 2:
+                currentRobot = robots[1];
+                break;
             default:
                 currentRobot = robots[0];
                 break;
@@ -227,10 +225,10 @@ public class FXManager : MonoBehaviour
         // robot jumps out of third station
         currentRobot.hookMesh.enabled = false;
         soundManager.audioSourceSuccess.Play();
-        yield return currentRobot.MoveTo(connectedSockets[4].transform.position, connectedSockets[4].transform.position + new Vector3(0f, 0.2f, 0f)); // maybe replace with jump animation
+        yield return currentRobot.MoveTo(connectedSockets[4].transform.position, connectedSockets[4].transform.position + new Vector3(0f, 0.3f, 0f)); // maybe replace with jump animation
 
         gameLogicManager.isBuilding = false;
-        if (gameLogicManager.robotCount < 1) // TODO: change back to 2 after test
+        if (gameLogicManager.robotCount < 2) // TODO: change back to 2 after test
         {
             gameLogicManager.robotCount++;
         }
