@@ -15,7 +15,7 @@ public class GameLogicManager : MonoBehaviour
             {-1, -1, -1, -1, -1},
             {-1, -1, -1, -1, -1},
         };
-    int[,] currentValues = new int[,]{
+    public int[,] currentValues = new int[,]{
             {-1, -1, -1, -1, -1},
             {-1, -1, -1, -1, -1},
             {-1, -1, -1, -1, -1},

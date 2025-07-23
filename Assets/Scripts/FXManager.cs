@@ -24,6 +24,7 @@ public class FXManager : MonoBehaviour
     Material lightRed;
     Material lightOff;
     Material lightOn;
+    Material lightHalfOn;
 
     Animator animator;
     Transform stationObject;
@@ -42,6 +43,7 @@ public class FXManager : MonoBehaviour
         lightGreen = Resources.Load<Material>("Materials/Stations/M_LampTrue");
         lightOff = Resources.Load<Material>("Materials/Stations/M_LampOFF");
         lightOn = Resources.Load<Material>("Materials/Stations/M_LampConnected");
+        lightHalfOn = Resources.Load<Material>("Materials/Stations/M_LampHalfConnected");
 
     }
 
@@ -56,15 +58,63 @@ public class FXManager : MonoBehaviour
         Color color = Color.gray;
         Material lampMat = lightOff;
         // state: 0 = off, 1 = connected, 2 = correct connection, 3 = wrong connection
+        bool otherSocketIsConnected = false;
+
+        if (row % 2 == 0 && row < 4)
+        {
+            if (gameLogicManager.currentValues[row + 1, column] != -1)
+            {
+                otherSocketIsConnected = true;
+            }
+            else
+            {
+                otherSocketIsConnected = false;
+            }
+        }
+        else if (row % 2 == 1 && row < 4)
+        {
+            if (gameLogicManager.currentValues[row + -1, column] != -1)
+            {
+                otherSocketIsConnected = true;
+            }
+            else
+            {
+                otherSocketIsConnected = false;
+            }
+        }
         switch (state)
         {
             case 0:
                 color = Color.gray;
-                lampMat = lightOff;
+                // lampMat = lightOff;
+                if (row == 4)
+                {
+                    lampMat = lightOff;
+                }
+                else if (otherSocketIsConnected)
+                {
+                    lampMat = lightHalfOn;
+                }
+                else
+                {
+                    lampMat = lightOff;
+                }
                 break;
+
             case 1:
                 color = Color.white;
-                lampMat = lightOn;
+                if (row == 4)
+                {
+                    lampMat = lightOn;
+                }
+                else if (otherSocketIsConnected)
+                {
+                    lampMat = lightOn;
+                }
+                else
+                {
+                    lampMat = lightHalfOn;
+                }
                 break;
             case 2:
                 color = Color.green;
@@ -77,6 +127,9 @@ public class FXManager : MonoBehaviour
             default:
                 break;
         }
+
+
+
         if (renderer != null)
         {
             Material mat = renderer.material;
@@ -98,7 +151,7 @@ public class FXManager : MonoBehaviour
         // Debug.Log("Wire has been disconnected at: " + disconnectedRow + " , " + disconnectedColumn);
         Vector3 endPosition = sockets[otherRow, otherColumn].transform.position;
         Vector3 startPosition = sockets[disconnectedRow, disconnectedColumn].transform.position;
-        
+
         if (id < 3) // wire 1
         {
             // line1.DisconnectLine(startPosition, endPosition);
@@ -200,11 +253,13 @@ public class FXManager : MonoBehaviour
 
         // animate the wobble
         animator = stationObject.parent.GetComponent<Animator>();
-        if (animator != null){
-          animator.SetTrigger("PlayWobble");
-          Debug.LogWarning("Wobble wobble.");
-          yield return new WaitForSeconds(0.5f);
-        } else{Debug.LogWarning("Animator not found.");}
+        if (animator != null)
+        {
+            animator.SetTrigger("PlayWobble");
+            Debug.LogWarning("Wobble wobble.");
+            yield return new WaitForSeconds(0.5f);
+        }
+        else { Debug.LogWarning("Animator not found."); }
 
 
 
